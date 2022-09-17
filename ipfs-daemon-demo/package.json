@@ -1,0 +1,18 @@
+{
+  "name": "ipfs-daemon-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "ipfs-core": "^0.16.0",
+    "ipfs-daemon": "^0.14.0",
+    "ipfs-http-client": "^58.0.0"
+  }
+}
