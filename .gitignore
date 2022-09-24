@@ -106,3 +106,6 @@ dist
 
 # Output
 out/
+
+# Mac Os
+.DS_Store

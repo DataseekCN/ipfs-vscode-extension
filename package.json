@@ -16,11 +16,41 @@
     "boilerplate"
   ],
   "activationEvents": [
-    "onStartupFinished"
+    "onStartupFinished",
+    "onCommand:extension.sayHello"
   ],
   "main": "./out/src/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ipfs-activitybar",
+          "title": "IPFS",
+          "icon": "src/resources/ipfs.svg"
+        }
+      ]
+    },
+    "views": {
+      "ipfs-activitybar": [
+        {
+          "id": "ipfs-node-info",
+          "name": "IPFS Node Info "
+        },
+        {
+          "id": "ipfs-peers",
+          "name": "IPFS Peers"
+        },
+        {
+          "id": "ipfs-files",
+          "name": "Files"
+        }
+      ]
+    },
     "commands": [
+      {
+        "command": "extension.sayHello",
+        "title": "Hello World"
+      },
       {
         "command": "webview.open",
         "title": "Open Webview",
@@ -87,6 +117,9 @@
     "webpack-cli": "^4.5.0"
   },
   "dependencies": {
+    "ipfs-core": "^0.16.0",
+    "ipfs-daemon": "^0.14.2",
+    "ipfs-http-client": "^58.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0"
