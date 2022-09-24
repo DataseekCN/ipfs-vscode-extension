@@ -9,9 +9,9 @@ import * as os from "os";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.log('恭喜，您的扩展“vscode-plugin-demo”已被激活！');
-  let daemon
-  daemon = createDaemon()
-  await daemon.start()
+  let daemon;
+  daemon = createDaemon();
+  await daemon.start();
   console.log('ipfs daemon start！');
 
   //   const {
@@ -99,8 +99,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
 function createDaemon() {
   //location of creating key pair
-  const newLocal = `${os.tmpdir()}/ipfs-test-123`
-  console.log(newLocal)
+  const newLocal = `${os.tmpdir()}/ipfs-test-123`;
+  console.log(newLocal);
   //config api, gateway port, 0 means random
   return new Daemon({
     init: {
@@ -115,7 +115,7 @@ function createDaemon() {
         RPC: '/ip4/127.0.0.1/tcp/0'
       }
     }
-  })
+  });
 }
 
 export function deactivate() { }
