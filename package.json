@@ -3,6 +3,7 @@
   "displayName": "ipfs-vscode-extension",
   "description": "IPFS vscode extension",
   "version": "0.0.1",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.71.0"
   },
