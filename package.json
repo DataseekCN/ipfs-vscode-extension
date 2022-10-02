@@ -11,6 +11,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onView:ipfs-node-info",
     "onCommand:ipfs-vscode-extension.helloWorld"
   ],
   "main": "./out/extension.js",
@@ -28,15 +29,15 @@
       "ipfs-activitybar": [
         {
           "id": "ipfs-node-info",
-          "name": "IPFS Node Info "
+          "name": "IPFS NODE INFO "
         },
         {
           "id": "ipfs-peers",
-          "name": "IPFS Peers"
+          "name": "IPFS PEERS"
         },
         {
           "id": "ipfs-files",
-          "name": "Files"
+          "name": "FILES"
         }
       ]
     }
