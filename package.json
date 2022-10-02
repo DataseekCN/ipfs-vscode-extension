@@ -16,6 +16,22 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "menus": {
+      "view/title": [
+        {
+          "command": "ipfs-vscode-extension.helloWorld",
+          "when": "view == ipfs-node-info",
+          "group": "navigation"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "ipfs-vscode-extension.helloWorld",
+        "title": "Upload Files",
+        "icon": "src/assets/upload.svg"
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {
