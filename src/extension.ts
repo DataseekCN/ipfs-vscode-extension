@@ -20,6 +20,12 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage('Hello World!!!!')
   })
 
+  let disposable2 = vscode.commands.registerCommand('ipfs-vscode-extension.loadMore', () => {
+    // The code you place here will be executed every time your command is executed
+    // Display a message box to the user
+    vscode.window.showInformationMessage('Will load more peers info')
+  })
+
   const nodeInfo = {
     'Node Status': 'Online',
     'Peer ID': '12D3KooWQpGDcLsJ5RQmyoqnF5iNrofemJNcUHbv2UWN2tkixtRo',
@@ -70,6 +76,7 @@ export function activate(context: vscode.ExtensionContext) {
   new ViewFiles(context, files)
 
   context.subscriptions.push(disposable)
+  context.subscriptions.push(disposable2)
 }
 
 // this method is called when your extension is deactivated
