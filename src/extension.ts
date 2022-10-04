@@ -3,19 +3,73 @@
 import * as vscode from 'vscode'
 import { ViewFiles } from './viewFiles'
 import { ViewNodeInfo } from './viewNodeInfo'
+import { getDownloadURL, unpack } from './download/newDownload'
+import got from 'got'
+
+const nodeFs = require('fs')
 const download = require('./download/download')
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "ipfs-vscode-extension" is now active!')
 
-  download().catch((err: Error) => {
-    console.error(err)
-    process.exit(1)
-  })
+  const fs = vscode.workspace.fs
+  const Uri = vscode.Uri
+
+  const globalStorageUri = context.globalStorageUri
+
+  // const bin = vscode.Uri.joinPath(globalStorageUri, 'ipfs/bin/go-ipfs')
+
+  const exist = nodeFs.existsSync(globalStorageUri.path)
+
+  if (!exist) {
+    fs.createDirectory(globalStorageUri)
+  }
+
+  const downloadUri = Uri.joinPath(globalStorageUri, '/download')
+  if (!nodeFs.existsSync(downloadUri.path)) {
+    await fs.createDirectory(downloadUri)
+  }
+
+  console.log(downloadUri.path)
+  const url = await getDownloadURL()
+  const filename = url.split('/').pop()
+  const filePath = `${downloadUri.path}/${filename}`
+
+  if (!nodeFs.existsSync(filePath)) {
+    // 这一步会很长 到时可以加个进度条
+    nodeFs.writeFileSync(filePath, await got(url).buffer())
+    // const goIpfs = await got(url)
+    // await fs.writeFile(Uri.joinPath(globalStorageUri, '/bin/kubo'), goIpfs)
+    console.log(url)
+  }
+
+  const binUri = Uri.joinPath(globalStorageUri, '/bin')
+  const binName = 'ipfs'
+  const binPath = `${binUri.path}/${binName}`
+
+  if (!nodeFs.existsSync(binPath)) {
+    await unpack(filePath, binPath)
+  }
+  // 现在ipfs的二进制已经下载到binPath里了 可以直接使用childProcess执行了 冲
+
+  // const list = await fs.readDirectory(globalStorageUri)
+  // const res = await fs.stat(bin)
+
+  // if () {
+  // } else {
+  //   vscode.workspace.fs.createDirectory(globalStorageUri)
+  // }
+  // console.log(globalStorageUri)
+  // console.log(exist)
+
+  // download().catch((err: Error) => {
+  //   console.error(err)
+  //   process.exit(1)
+  // })
 
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
