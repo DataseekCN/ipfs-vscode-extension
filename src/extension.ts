@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode'
+import { ViewFiles } from './viewFiles'
 import { ViewNodeInfo } from './viewNodeInfo'
 
 // this method is called when your extension is activated
@@ -27,7 +28,46 @@ export function activate(context: vscode.ExtensionContext) {
     'Public Key': 'CAESIN7Yk1agiu0aO2RqZMgldEX6ED0453SqQgmKj7HFyvAS'
   }
 
+  const files: File[] = [
+    {
+      fileName: 'abc.txt',
+      cid: ''
+    },
+    {
+      fileName: 'this a folder 1',
+      cid: '',
+      children: [
+        {
+          fileName: 'ddd.txt',
+          cid: ''
+        }
+      ]
+    },
+    {
+      fileName: 'this a folder 2',
+      cid: '',
+      children: [
+        {
+          fileName: 'eee.txt',
+          cid: ''
+        },
+        {
+          fileName: 'this a folder 3',
+          cid: '',
+          children: [
+            {
+              fileName: 'fff.txt',
+              cid: ''
+            }
+          ]
+        }
+      ]
+    }
+  ]
+
   new ViewNodeInfo(context, nodeInfo)
+
+  new ViewFiles(context, files)
 
   context.subscriptions.push(disposable)
 }
