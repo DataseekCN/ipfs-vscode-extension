@@ -20,17 +20,17 @@ export function activate(context: vscode.ExtensionContext) {
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
-  let disposable = vscode.commands.registerCommand('ipfs-vscode-extension.helloWorld', () => {
+  const helloWorld = vscode.commands.registerCommand('ipfs-vscode-extension.helloWorld', () => {
     // The code you place here will be executed every time your command is executed
     // Display a message box to the user
     vscode.window.showInformationMessage('Hello World!!!!')
   })
 
-  let disposable2 = vscode.commands.registerCommand('ipfs-vscode-extension.loadMore', () => {
+  const loadMorePeersInfo = vscode.commands.registerCommand('ipfs-vscode-extension.loadMore', () => {
     vscode.window.showInformationMessage('Will load more peers info')
   })
 
-  let disposable3 = vscode.commands.registerCommand('ipfs-vscode-extension.uploadFile', () => {
+  const uploadFile = vscode.commands.registerCommand('ipfs-vscode-extension.uploadFile', () => {
     // more select options see here
     const options: vscode.OpenDialogOptions = {
       canSelectFolders: true
@@ -40,6 +40,18 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(fileUri[0].fsPath)
       }
     })
+  })
+
+  const shareLink = vscode.commands.registerCommand('ipfs-vscode-extension.shareLink', (args: File) => {
+    const shareLink = `https://ipfs.io/ipfs/${args.cid}?filename=${args.fileName}`
+    vscode.env.clipboard.writeText(shareLink)
+    vscode.window.showInformationMessage(`Copy link completed! Links is : ${shareLink}`)
+  })
+
+  const copyCid = vscode.commands.registerCommand('ipfs-vscode-extension.copyCid', (args: File) => {
+    const cid = args.cid
+    vscode.env.clipboard.writeText(cid)
+    vscode.window.showInformationMessage(`Copy CID completed! CID is : ${cid}`)
   })
 
   const nodeInfo = {
@@ -52,26 +64,26 @@ export function activate(context: vscode.ExtensionContext) {
 
   const files: File[] = [
     {
-      fileName: 'abc.txt',
-      cid: ''
+      fileName: 'ipfs.svg',
+      cid: 'QmWiZT7v1RQue8tSSAkBDWM4WuXLudJH78MehqXnVmM8CT'
     },
     {
       fileName: 'this a folder 1',
-      cid: '',
+      cid: 'QmU93aJAqRCuTuzGKfpogxJqVTgkQ9awK8qy7ZF1Fy8Tbs',
       children: [
         {
           fileName: 'ddd.txt',
-          cid: ''
+          cid: 'QmWiZT7v1RQue8tSSAkBDWM4WuXLudJH78MehqXnVmM8CT'
         }
       ]
     },
     {
       fileName: 'this a folder 2',
-      cid: '',
+      cid: 'QmYccxN65uH3PecEaNTpEE8WmLLgnqrpDfwqqXEe8X6QeE',
       children: [
         {
           fileName: 'eee.txt',
-          cid: ''
+          cid: 'QmWiZT7v1RQue8tSSAkBDWM4WuXLudJH78MehqXnVmM8CT'
         },
         {
           fileName: 'this a folder 3',
@@ -79,7 +91,7 @@ export function activate(context: vscode.ExtensionContext) {
           children: [
             {
               fileName: 'fff.txt',
-              cid: ''
+              cid: 'QmWiZT7v1RQue8tSSAkBDWM4WuXLudJH78MehqXnVmM8CT'
             }
           ]
         }
@@ -91,9 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   new ViewFiles(context, files)
 
-  context.subscriptions.push(disposable)
-  context.subscriptions.push(disposable2)
-  context.subscriptions.push(disposable3)
+  context.subscriptions.push(helloWorld, loadMorePeersInfo, uploadFile, shareLink, copyCid)
 }
 
 // this method is called when your extension is deactivated

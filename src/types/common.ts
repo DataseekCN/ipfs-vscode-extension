@@ -1,5 +1,5 @@
 type File = {
   fileName: string
-  cid: String
+  cid: string
   children?: File[]
 }

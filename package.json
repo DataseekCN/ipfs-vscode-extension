@@ -53,12 +53,30 @@
           "when": "view == ipfs-peers",
           "group": "navigation"
         }
+      ],
+      "view/item/context": [
+        {
+          "command": "ipfs-vscode-extension.shareLink",
+          "when": "view == ipfs-files"
+        },
+        {
+          "command": "ipfs-vscode-extension.copyCid",
+          "when": "view == ipfs-files"
+        }
       ]
     },
     "commands": [
       {
         "command": "ipfs-vscode-extension.loadMore",
         "title": "Load More"
+      },
+      {
+        "command": "ipfs-vscode-extension.shareLink",
+        "title": "Share Link"
+      },
+      {
+        "command": "ipfs-vscode-extension.copyCid",
+        "title": "Copy CID"
       },
       {
         "command": "ipfs-vscode-extension.uploadFile",
