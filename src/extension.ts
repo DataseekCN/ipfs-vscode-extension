@@ -21,9 +21,19 @@ export function activate(context: vscode.ExtensionContext) {
   })
 
   let disposable2 = vscode.commands.registerCommand('ipfs-vscode-extension.loadMore', () => {
-    // The code you place here will be executed every time your command is executed
-    // Display a message box to the user
     vscode.window.showInformationMessage('Will load more peers info')
+  })
+
+  let disposable3 = vscode.commands.registerCommand('ipfs-vscode-extension.uploadFile', () => {
+    // more select options see here
+    const options: vscode.OpenDialogOptions = {
+      canSelectFolders: true
+    }
+    vscode.window.showOpenDialog(options).then((fileUri) => {
+      if (fileUri && fileUri[0]) {
+        vscode.window.showInformationMessage(fileUri[0].fsPath)
+      }
+    })
   })
 
   const nodeInfo = {
@@ -77,6 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(disposable)
   context.subscriptions.push(disposable2)
+  context.subscriptions.push(disposable3)
 }
 
 // this method is called when your extension is deactivated

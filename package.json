@@ -44,7 +44,7 @@
     "menus": {
       "view/title": [
         {
-          "command": "ipfs-vscode-extension.helloWorld",
+          "command": "ipfs-vscode-extension.uploadFile",
           "when": "view == ipfs-node-info",
           "group": "navigation"
         },
@@ -57,13 +57,13 @@
     },
     "commands": [
       {
-        "command": "ipfs-vscode-extension.helloWorld",
-        "title": "Upload Files",
-        "icon": "src/assets/upload.svg"
-      },
-      {
         "command": "ipfs-vscode-extension.loadMore",
         "title": "Load More"
+      },
+      {
+        "command": "ipfs-vscode-extension.uploadFile",
+        "title": "Upload File",
+        "icon": "src/assets/upload.svg"
       }
     ]
   },
