@@ -23,6 +23,13 @@
           "title": "IPFS",
           "icon": "src/assets/ipfs.svg"
         }
+      ],
+      "panel": [
+        {
+          "id": "ipfs-panel",
+          "title": "IPFS",
+          "icon": "src/assets/ipfs.svg"
+        }
       ]
     },
     "views": {

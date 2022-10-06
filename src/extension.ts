@@ -5,8 +5,9 @@ import { ViewFiles } from './viewFiles'
 import { ViewNodeInfo } from './viewNodeInfo'
 import { getDownloadURL, unpack } from './download/newDownload'
 import got from 'got'
-
-const nodeFs = require('fs')
+import * as nodeFs from 'fs'
+import * as nodePath from 'path'
+import { execFile } from 'child_process'
 const download = require('./download/download')
 
 // this method is called when your extension is activated
@@ -49,27 +50,18 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const binUri = Uri.joinPath(globalStorageUri, '/bin')
   const binName = 'ipfs'
-  const binPath = `${binUri.path}/${binName}`
+  const binPath = nodePath.join(binUri.path, binName)
 
   if (!nodeFs.existsSync(binPath)) {
     await unpack(filePath, binPath)
   }
-  // 现在ipfs的二进制已经下载到binPath里了 可以直接使用childProcess执行了 冲
 
-  // const list = await fs.readDirectory(globalStorageUri)
-  // const res = await fs.stat(bin)
-
-  // if () {
-  // } else {
-  //   vscode.workspace.fs.createDirectory(globalStorageUri)
-  // }
-  // console.log(globalStorageUri)
-  // console.log(exist)
-
-  // download().catch((err: Error) => {
-  //   console.error(err)
-  //   process.exit(1)
-  // })
+  // initialize ipfs daemon
+  const exePath = nodePath.join(binPath, 'kubo', 'ipfs')
+  console.log('Initializing daemon...')
+  const daemon = execFile(exePath, ['daemon', '--init'])
+  const daemonOutput = vscode.window.createOutputChannel('IPFS Daemon')
+  daemon.stdout?.on('data', (chunk) => daemonOutput.append(chunk))
 
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
