@@ -9,8 +9,7 @@ import * as nodeFs from 'fs'
 import * as nodePath from 'path'
 import { execFile } from 'child_process'
 import { IpfsApis } from './client/ipfsApis'
-const download = require('./download/download')
-
+// import { create, globSource } from 'ipfs-http-client'
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
@@ -98,8 +97,19 @@ export async function activate(context: vscode.ExtensionContext) {
     const options: vscode.OpenDialogOptions = {
       canSelectFolders: true
     }
-    vscode.window.showOpenDialog(options).then((fileUri) => {
+    vscode.window.showOpenDialog(options).then(async (fileUri) => {
       if (fileUri && fileUri[0]) {
+        const stat = nodeFs.statSync(fileUri[0].fsPath)
+        if (stat.isDirectory()) {
+        } else if (stat.isFile()) {
+          // const ipfs = await create()
+          // const file = await ipfs.addAll(globSource())
+          // console.log(file)
+          // ipfsApis.upload(fileUri[0].fsPath)
+        } else {
+          throw new Error('something wrong with the file system')
+        }
+
         vscode.window.showInformationMessage(fileUri[0].fsPath)
       }
     })

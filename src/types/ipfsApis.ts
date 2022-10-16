@@ -34,3 +34,9 @@ type NodeInfo = {
 type NodeId = {
   PublicKey: string
 }
+
+type UploadResponse = {
+  Hash: string
+  Name: string
+  Size: string
+}

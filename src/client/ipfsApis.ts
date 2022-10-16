@@ -1,4 +1,6 @@
 import { HttpClient, IHttpClient } from './client'
+import { IHttpClientRequestParameters } from '../types/client'
+const fs = require('fs')
 
 export interface IIpfsApis {
   getFileRootCid(): Promise<String>
@@ -49,6 +51,24 @@ export class IpfsApis implements IIpfsApis {
     const queryPath = '/id'
     try {
       return await this.httpClient.post<NodeId>({ queryPath })
+    } catch (e) {
+      console.log(e)
+      throw new Error('Failed to get nodeId info.')
+    }
+  }
+
+  async upload(path: string): Promise<UploadResponse> {
+    const parameters: IHttpClientRequestParameters = {
+      queryPath: '/id',
+      data: '',
+      options: {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    }
+    try {
+      return await this.httpClient.post<UploadResponse>(parameters)
     } catch (e) {
       console.log(e)
       throw new Error('Failed to get nodeId info.')

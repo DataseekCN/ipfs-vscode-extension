@@ -1,4 +1,6 @@
 import { AxiosRequestConfig } from 'axios'
+import { IHttpClientRequestParameters } from '../types/client'
+
 const axios = require('axios')
 
 export interface IHttpClient {
@@ -16,13 +18,13 @@ export class HttpClient implements IHttpClient {
 
   post<T>(parameters: IHttpClientRequestParameters): Promise<T> {
     return new Promise<T>((resolve, reject) => {
-      const { queryPath, args } = parameters
+      const { queryPath, args, data, options } = parameters
       const queryArgs = args ? `?arg=${args}` : ''
 
       console.log('calling: ', `${queryPath}${queryArgs}`)
 
       axios
-        .post(`${queryPath}${queryArgs}`, null, this.options)
+        .post(`${queryPath}${queryArgs}`, data, { ...this.options, ...options })
         .then((response: any) => {
           resolve(response.data as T)
         })
