@@ -64,19 +64,21 @@ export async function activate(context: vscode.ExtensionContext) {
   const daemonOutput = vscode.window.createOutputChannel('IPFS Daemon')
   daemon.stdout?.on('data', (chunk) => daemonOutput.append(chunk))
 
-  const nodeInfo = {
-    'Node Status': 'Online',
-    'Peer ID': '12D3KooWQpGDcLsJ5RQmyoqnF5iNrofemJNcUHbv2UWN2tkixtRo',
-    API: '/ip4/127.0.0.1/tcp/5001',
-    GateWay: 'http://127.0.0.1:8080',
-    'Public Key': 'CAESIN7Yk1agiu0aO2RqZMgldEX6ED0453SqQgmKj7HFyvAS'
-  }
-
   const ipfsApis = new IpfsApis('http://127.0.0.1:5001/api/v0')
 
-  const nodeInfos = await ipfsApis.getNodeInfo()
+  const nodeConfigs = await ipfsApis.getConfigs()
 
-  console.log(nodeInfos)
+  const nodeId = await ipfsApis.getNodeId()
+
+  const nodeInfo = {
+    'Node Status': 'Online',
+    'Peer ID': nodeConfigs.Identity.PeerID,
+    API: nodeConfigs.Addresses.API,
+    GateWay: nodeConfigs.Addresses.Gateway,
+    'Public Key': nodeId.PublicKey
+  }
+
+  console.log(nodeInfo)
 
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand

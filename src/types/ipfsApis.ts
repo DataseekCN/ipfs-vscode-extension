@@ -21,4 +21,16 @@ type File = {
   Type: number
 }
 
-type NodeInfo = {}
+type NodeInfo = {
+  Addresses: {
+    Gateway: string
+    API: string
+  }
+  Identity: {
+    PeerID: string
+  }
+}
+
+type NodeId = {
+  PublicKey: string
+}

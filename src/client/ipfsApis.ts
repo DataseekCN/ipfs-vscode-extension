@@ -35,13 +35,23 @@ export class IpfsApis implements IIpfsApis {
     }
   }
 
-  async getNodeInfo(): Promise<NodeInfo> {
+  async getConfigs(): Promise<NodeInfo> {
     const queryPath = '/config/show'
     try {
-      return await this.httpClient.post<Stat>({ queryPath })
+      return await this.httpClient.post<NodeInfo>({ queryPath })
     } catch (e) {
       console.log(e)
-      throw new Error('Failed to get node info.')
+      throw new Error('Failed to get config info.')
+    }
+  }
+
+  async getNodeId(): Promise<NodeId> {
+    const queryPath = '/id'
+    try {
+      return await this.httpClient.post<NodeId>({ queryPath })
+    } catch (e) {
+      console.log(e)
+      throw new Error('Failed to get nodeId info.')
     }
   }
 }
