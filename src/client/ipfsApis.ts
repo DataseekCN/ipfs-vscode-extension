@@ -14,7 +14,7 @@ export class IpfsApis implements IIpfsApis {
     this.httpClient = new HttpClient(this.baseUrl)
   }
 
-  async getFileRootCid(): Promise<String> {
+  async getFileRootCid(): Promise<string> {
     const queryPath = '/files/stat'
     const args = '/'
     try {
@@ -28,10 +28,10 @@ export class IpfsApis implements IIpfsApis {
   async getFileByCid(cid: string): Promise<File[]> {
     const queryPath = 'ls'
     try {
-      return (await this.httpClient.post<FileByCid>({ queryPath, args: cid })).Objects.Links
+      return (await this.httpClient.post<FileByCid>({ queryPath, args: cid })).Objects[0].Links
     } catch (e) {
       console.log(e)
-      throw new Error('Failed to get file.')
+      throw new Error('Failed to get file info.')
     }
   }
 

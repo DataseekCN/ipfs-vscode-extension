@@ -103,21 +103,21 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   })
 
-  const shareLink = vscode.commands.registerCommand('ipfs-vscode-extension.shareLink', (args: MockFile) => {
-    const shareLink = `https://ipfs.io/ipfs/${args.cid}?filename=${args.fileName}`
+  const shareLink = vscode.commands.registerCommand('ipfs-vscode-extension.shareLink', (args: File) => {
+    const shareLink = `https://ipfs.io/ipfs/${args.Hash}?filename=${args.Name}`
     vscode.env.clipboard.writeText(shareLink)
     vscode.window.showInformationMessage(`Copy link completed! Links is : ${shareLink}`)
   })
 
-  const copyCid = vscode.commands.registerCommand('ipfs-vscode-extension.copyCid', (args: MockFile) => {
-    const cid = args.cid
+  const copyCid = vscode.commands.registerCommand('ipfs-vscode-extension.copyCid', (args: File) => {
+    const cid = args.Hash
     vscode.env.clipboard.writeText(cid)
     vscode.window.showInformationMessage(`Copy CID completed! CID is : ${cid}`)
   })
 
-  const openInWebView = vscode.commands.registerCommand('ipfs-vscode-extension.openInWebView', (args: MockFile) => {
-    const fileLink = `${nodeInfo.GateWay}/ipfs/${args.cid}?filename=${args.fileName}`
-    const panel = vscode.window.createWebviewPanel('Webview', args.fileName, vscode.ViewColumn.One, {
+  const openInWebView = vscode.commands.registerCommand('ipfs-vscode-extension.openInWebView', (args: File) => {
+    const fileLink = `${nodeInfo.GateWay}/ipfs/${args.Hash}?filename=${args.Name}`
+    const panel = vscode.window.createWebviewPanel('Webview', args.Name, vscode.ViewColumn.One, {
       enableScripts: true,
       retainContextWhenHidden: true
     })
@@ -145,52 +145,18 @@ export async function activate(context: vscode.ExtensionContext) {
     </html>`
   }
 
-  const setPinning = vscode.commands.registerCommand('ipfs-vscode-extension.setPinning', async (args: MockFile) => {
-    const cid = args.cid
+  const setPinning = vscode.commands.registerCommand('ipfs-vscode-extension.setPinning', async (args: File) => {
+    const cid = args.Hash
     //set pinning and change icon
     vscode.window.showInformationMessage(`Set pinning successfully! CID is : ${cid}`)
   })
 
-  const files: MockFile[] = [
-    {
-      fileName: 'ipfs.svg',
-      cid: 'QmWiZT7v1RQue8tSSAkBDWM4WuXLudJH78MehqXnVmM8CT'
-    },
-    {
-      fileName: 'cdnjs',
-      cid: 'QmU93aJAqRCuTuzGKfpogxJqVTgkQ9awK8qy7ZF1Fy8Tbs',
-      children: [
-        {
-          fileName: 'ddd.txt',
-          cid: 'QmWiZT7v1RQue8tSSAkBDWM4WuXLudJH78MehqXnVmM8CT'
-        }
-      ]
-    },
-    {
-      fileName: 'this a folder 2',
-      cid: 'QmYccxN65uH3PecEaNTpEE8WmLLgnqrpDfwqqXEe8X6QeE',
-      children: [
-        {
-          fileName: 'eee.txt',
-          cid: 'QmWiZT7v1RQue8tSSAkBDWM4WuXLudJH78MehqXnVmM8CT'
-        },
-        {
-          fileName: 'this a folder 3',
-          cid: '',
-          children: [
-            {
-              fileName: 'fff.txt',
-              cid: 'QmWiZT7v1RQue8tSSAkBDWM4WuXLudJH78MehqXnVmM8CT'
-            }
-          ]
-        }
-      ]
-    }
-  ]
-
   new ViewNodeInfo(context, nodeInfo)
 
-  new ViewFiles(context, files)
+  const rootCid = await ipfsApis.getFileRootCid()
+  const files: File[] = await ipfsApis.getFileByCid(rootCid)
+
+  new ViewFiles(context, files, ipfsApis)
 
   context.subscriptions.push(helloWorld, loadMorePeersInfo, uploadFile, shareLink, copyCid, setPinning, openInWebView)
 }

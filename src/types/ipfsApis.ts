@@ -10,7 +10,7 @@ type FileByCid = {
   Objects: {
     Hash: string
     Links: File[]
-  }
+  }[]
 }
 
 type File = {
