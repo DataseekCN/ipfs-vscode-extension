@@ -1,16 +1,16 @@
 import * as vscode from 'vscode'
 import { TreeItem } from 'vscode'
 
-export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDragAndDropController<File> {
+export class ViewFiles implements vscode.TreeDataProvider<MockFile>, vscode.TreeDragAndDropController<MockFile> {
   dropMimeTypes = ['application/vnd.code.tree.ViewFiles']
   dragMimeTypes = ['text/uri-list']
-  private _onDidChangeTreeData: vscode.EventEmitter<(File | undefined)[] | undefined> = new vscode.EventEmitter<
-    File[] | undefined
+  private _onDidChangeTreeData: vscode.EventEmitter<(MockFile | undefined)[] | undefined> = new vscode.EventEmitter<
+    MockFile[] | undefined
   >()
   // We want to use an array as the event type, but the API for this is currently being finalized. Until it's finalized, use any.
   public onDidChangeTreeData: vscode.Event<any> = this._onDidChangeTreeData.event
 
-  private files: File[]
+  private files: MockFile[]
 
   constructor(context: vscode.ExtensionContext, files: any[]) {
     const view = vscode.window.createTreeView('ipfs-files', {
@@ -23,13 +23,13 @@ export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDrag
     this.files = files
   }
 
-  getTreeItem(element: File): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(element: MockFile): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return new TreeItem(
       `${element.fileName} (${element.cid})`,
       element.children !== undefined ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None
     )
   }
-  getChildren(element?: File): vscode.ProviderResult<File[]> {
+  getChildren(element?: MockFile): vscode.ProviderResult<MockFile[]> {
     if (!element) {
       return this.files
     }

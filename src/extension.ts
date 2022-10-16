@@ -8,6 +8,7 @@ import got from 'got'
 import * as nodeFs from 'fs'
 import * as nodePath from 'path'
 import { execFile } from 'child_process'
+import { IpfsApis } from './client/ipfsApis'
 const download = require('./download/download')
 
 // this method is called when your extension is activated
@@ -71,6 +72,8 @@ export async function activate(context: vscode.ExtensionContext) {
     'Public Key': 'CAESIN7Yk1agiu0aO2RqZMgldEX6ED0453SqQgmKj7HFyvAS'
   }
 
+  const ipfsApis = new IpfsApis('http://127.0.0.1:5001/api/v0')
+
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
@@ -96,19 +99,19 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   })
 
-  const shareLink = vscode.commands.registerCommand('ipfs-vscode-extension.shareLink', (args: File) => {
+  const shareLink = vscode.commands.registerCommand('ipfs-vscode-extension.shareLink', (args: MockFile) => {
     const shareLink = `https://ipfs.io/ipfs/${args.cid}?filename=${args.fileName}`
     vscode.env.clipboard.writeText(shareLink)
     vscode.window.showInformationMessage(`Copy link completed! Links is : ${shareLink}`)
   })
 
-  const copyCid = vscode.commands.registerCommand('ipfs-vscode-extension.copyCid', (args: File) => {
+  const copyCid = vscode.commands.registerCommand('ipfs-vscode-extension.copyCid', (args: MockFile) => {
     const cid = args.cid
     vscode.env.clipboard.writeText(cid)
     vscode.window.showInformationMessage(`Copy CID completed! CID is : ${cid}`)
   })
 
-  const openInWebView = vscode.commands.registerCommand('ipfs-vscode-extension.openInWebView', (args: File) => {
+  const openInWebView = vscode.commands.registerCommand('ipfs-vscode-extension.openInWebView', (args: MockFile) => {
     const fileLink = `${nodeInfo.GateWay}/ipfs/${args.cid}?filename=${args.fileName}`
     const panel = vscode.window.createWebviewPanel('Webview', args.fileName, vscode.ViewColumn.One, {
       enableScripts: true,
@@ -138,13 +141,13 @@ export async function activate(context: vscode.ExtensionContext) {
     </html>`
   }
 
-  const setPinning = vscode.commands.registerCommand('ipfs-vscode-extension.setPinning', (args: File) => {
+  const setPinning = vscode.commands.registerCommand('ipfs-vscode-extension.setPinning', async (args: MockFile) => {
     const cid = args.cid
     //set pinning and change icon
     vscode.window.showInformationMessage(`Set pinning successfully! CID is : ${cid}`)
   })
 
-  const files: File[] = [
+  const files: MockFile[] = [
     {
       fileName: 'ipfs.svg',
       cid: 'QmWiZT7v1RQue8tSSAkBDWM4WuXLudJH78MehqXnVmM8CT'

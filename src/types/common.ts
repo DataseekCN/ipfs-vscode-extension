@@ -1,5 +1,5 @@
-type File = {
+type MockFile = {
   fileName: string
   cid: string
-  children?: File[]
+  children?: MockFile[]
 }
