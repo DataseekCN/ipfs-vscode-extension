@@ -25,7 +25,7 @@ export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDrag
 
   getTreeItem(element: File): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return new TreeItem(
-      element.fileName,
+      `${element.fileName} (${element.cid})`,
       element.children !== undefined ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None
     )
   }
