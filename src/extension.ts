@@ -74,6 +74,10 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const ipfsApis = new IpfsApis('http://127.0.0.1:5001/api/v0')
 
+  const nodeInfos = await ipfsApis.getNodeInfo()
+
+  console.log(nodeInfos)
+
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json

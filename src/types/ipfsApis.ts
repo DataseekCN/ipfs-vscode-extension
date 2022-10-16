@@ -20,3 +20,5 @@ type File = {
   Target: string
   Type: number
 }
+
+type NodeInfo = {}

@@ -34,4 +34,14 @@ export class IpfsApis implements IIpfsApis {
       throw new Error('Failed to get file.')
     }
   }
+
+  async getNodeInfo(): Promise<NodeInfo> {
+    const queryPath = '/config/show'
+    try {
+      return await this.httpClient.post<Stat>({ queryPath })
+    } catch (e) {
+      console.log(e)
+      throw new Error('Failed to get node info.')
+    }
+  }
 }
