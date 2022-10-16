@@ -69,6 +69,14 @@
         {
           "command": "ipfs-vscode-extension.copyCid",
           "when": "view == ipfs-files"
+        },
+        {
+          "command": "ipfs-vscode-extension.openInWebView",
+          "when": "view == ipfs-files"
+        },
+        {
+          "command": "ipfs-vscode-extension.setPinning",
+          "when": "view == ipfs-files"
         }
       ]
     },
@@ -87,8 +95,15 @@
       },
       {
         "command": "ipfs-vscode-extension.uploadFile",
-        "title": "Upload File",
-        "icon": "src/assets/upload.svg"
+        "title": "Upload File"
+      },
+      {
+        "command": "ipfs-vscode-extension.openInWebView",
+        "title": "Open In WebView"
+      },
+      {
+        "command": "ipfs-vscode-extension.setPinning",
+        "title": "Set Pinning"
       }
     ]
   },

@@ -63,6 +63,14 @@ export async function activate(context: vscode.ExtensionContext) {
   const daemonOutput = vscode.window.createOutputChannel('IPFS Daemon')
   daemon.stdout?.on('data', (chunk) => daemonOutput.append(chunk))
 
+  const nodeInfo = {
+    'Node Status': 'Online',
+    'Peer ID': '12D3KooWQpGDcLsJ5RQmyoqnF5iNrofemJNcUHbv2UWN2tkixtRo',
+    API: '/ip4/127.0.0.1/tcp/5001',
+    GateWay: 'http://127.0.0.1:8080',
+    'Public Key': 'CAESIN7Yk1agiu0aO2RqZMgldEX6ED0453SqQgmKj7HFyvAS'
+  }
+
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
@@ -100,13 +108,41 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage(`Copy CID completed! CID is : ${cid}`)
   })
 
-  const nodeInfo = {
-    'Node Status': 'Online',
-    'Peer ID': '12D3KooWQpGDcLsJ5RQmyoqnF5iNrofemJNcUHbv2UWN2tkixtRo',
-    API: '/ip4/127.0.0.1/tcp/5001',
-    GateWay: 'http://127.0.0.1:8080',
-    'Public Key': 'CAESIN7Yk1agiu0aO2RqZMgldEX6ED0453SqQgmKj7HFyvAS'
+  const openInWebView = vscode.commands.registerCommand('ipfs-vscode-extension.openInWebView', (args: File) => {
+    const fileLink = `${nodeInfo.GateWay}/ipfs/${args.cid}?filename=${args.fileName}`
+    const panel = vscode.window.createWebviewPanel('Webview', args.fileName, vscode.ViewColumn.One, {
+      enableScripts: true,
+      retainContextWhenHidden: true
+    })
+    panel.webview.html = getWebviewContent(fileLink)
+  })
+
+  const getWebviewContent = (link: String) => {
+    return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>View File</title>
+      <style>
+        html,body,iframe{width: 100%;height: 100%;padding: 0;margin: 0}
+        #wrap{width: 100%;height: 100%;}
+        iframe{border: none;}
+      </style>
+    </head>
+    <body>
+      <div id="wrap">
+        <iframe src="${link}"></iframe>
+      </div>
+    </body>
+    </html>`
   }
+
+  const setPinning = vscode.commands.registerCommand('ipfs-vscode-extension.setPinning', (args: File) => {
+    const cid = args.cid
+    //set pinning and change icon
+    vscode.window.showInformationMessage(`Set pinning successfully! CID is : ${cid}`)
+  })
 
   const files: File[] = [
     {
@@ -114,7 +150,7 @@ export async function activate(context: vscode.ExtensionContext) {
       cid: 'QmWiZT7v1RQue8tSSAkBDWM4WuXLudJH78MehqXnVmM8CT'
     },
     {
-      fileName: 'this a folder 1',
+      fileName: 'cdnjs',
       cid: 'QmU93aJAqRCuTuzGKfpogxJqVTgkQ9awK8qy7ZF1Fy8Tbs',
       children: [
         {
@@ -149,7 +185,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   new ViewFiles(context, files)
 
-  context.subscriptions.push(helloWorld, loadMorePeersInfo, uploadFile, shareLink, copyCid)
+  context.subscriptions.push(helloWorld, loadMorePeersInfo, uploadFile, shareLink, copyCid, setPinning, openInWebView)
 }
 
 // this method is called when your extension is deactivated
