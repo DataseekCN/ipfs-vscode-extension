@@ -28,6 +28,7 @@ export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDrag
   }
 
   getTreeItem(element: File): vscode.TreeItem | Thenable<vscode.TreeItem> {
+    // Type 1 on behalf of folder
     return new TreeItem(
       `${element.Name} (${element.Hash})`,
       element.Type === 1 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None
