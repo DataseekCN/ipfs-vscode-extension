@@ -1,6 +1,5 @@
 import * as vscode from 'vscode'
 import { TreeItem } from 'vscode'
-import { IHttpClient } from './client/client'
 import { IIpfsApis } from './client/ipfsApis'
 
 export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDragAndDropController<File> {

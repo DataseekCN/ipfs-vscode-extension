@@ -5,6 +5,9 @@ const fs = require('fs')
 export interface IIpfsApis {
   getFileRootCid(): Promise<String>
   getFileByCid(cid: String): Promise<File[]>
+  getConfigs(): Promise<NodeInfo>
+  getNodeId(): Promise<NodeId>
+  upload(path: string): Promise<UploadResponse>
 }
 
 export class IpfsApis implements IIpfsApis {
