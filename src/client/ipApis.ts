@@ -1,7 +1,7 @@
-import { IpInfo } from '../types/ipClient'
+import { IpInfo } from '../types/ipApis'
 import { HttpClient, IHttpClient } from './client'
 
-export class IpClient {
+export class IpApis {
   private httpClient: IHttpClient
 
   constructor() {
