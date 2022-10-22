@@ -22,7 +22,7 @@ export class HttpClient implements IHttpClient {
       const queryArgs = args ? `?arg=${args}` : ''
 
       console.log('calling: ', `${queryPath}${queryArgs}`)
-
+      console.log(data)
       axios
         .post(`${queryPath}${queryArgs}`, data, { ...this.options, ...options })
         .then((response: any) => {

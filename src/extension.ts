@@ -9,6 +9,12 @@ import * as nodeFs from 'fs'
 import * as nodePath from 'path'
 import { execFile } from 'child_process'
 import { IpfsApis } from './client/ipfsApis'
+import { IpApis } from './client/ipApis'
+import { ViewPeersInfo } from './viewPeersInfo'
+import { ViewContent } from './types/viewPeersInfo'
+import countryCodeEmoji from 'country-code-emoji'
+const ipdetails = require('node-ip-details')
+
 // import { create, globSource } from 'ipfs-http-client'
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -64,6 +70,7 @@ export async function activate(context: vscode.ExtensionContext) {
   daemon.stdout?.on('data', (chunk) => daemonOutput.append(chunk))
 
   const ipfsApis = new IpfsApis('http://127.0.0.1:5001/api/v0')
+  const ipApis = new IpApis()
 
   const nodeConfigs = await ipfsApis.getConfigs()
 
@@ -169,6 +176,37 @@ export async function activate(context: vscode.ExtensionContext) {
   const files: File[] = await ipfsApis.getFileByCid(rootCid)
 
   new ViewFiles(context, files, ipfsApis)
+
+  const ipMap = new Map()
+  const peersInfoAll = await ipfsApis.getPeersInfo()
+  // const queryBatch = Math.trunc(peersInfoAll.length / 100)
+  // for (let i = 0; i < queryBatch && i < 15; i++) {
+  //   const peersInfo = peersInfoAll.slice(i * 100, i * 100 + 99)
+  //   const ips: string[] = []
+  //   peersInfo.forEach((peerInfo) => {
+  //     ips.push(peerInfo.Addr.split('/')[2])
+  //   })
+  //   const ipsInfo = await ipApis.getIpInfo(ips)
+  //   ipsInfo.forEach((ipInfo: { query: any }) => {
+  //     ipMap.set(ipInfo.query, ipInfo)
+  //   })
+  // }
+  const peersInfo = peersInfoAll.slice(0, 99)
+  const viewContents: ViewContent[] = []
+  peersInfoAll.forEach(async (peerInfo) => {
+    const ip = peerInfo.Addr.split('/')[2]
+
+    const ipInfo = ipMap.get(ip)
+    const emoj = ipInfo.status === 'success' ? countryCodeEmoji(ipInfo.countryCode) : '🌏'
+    const children: ViewContent[] = []
+    children.push({ content: `Location: ${ipInfo.country}, ${ipInfo.regionName}`, isFather: false })
+    children.push({ content: `Latency: ${peerInfo.Latency}`, isFather: false })
+    children.push({ content: `Peer ID: ${peerInfo.Peer}`, isFather: false })
+    children.push({ content: `Connection: ${peerInfo.Addr}`, isFather: false })
+    viewContents.push({ content: `${emoj} ${ipInfo.countryCode} (${peerInfo.Peer})`, isFather: true, children })
+  })
+
+  new ViewPeersInfo(context, viewContents, ipfsApis)
 
   context.subscriptions.push(helloWorld, loadMorePeersInfo, uploadFile, shareLink, copyCid, setPinning, openInWebView)
 }

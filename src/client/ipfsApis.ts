@@ -5,6 +5,7 @@ const fs = require('fs')
 export interface IIpfsApis {
   getFileRootCid(): Promise<String>
   getFileByCid(cid: String): Promise<File[]>
+  getPeersInfo(): Promise<PeerInfo[]>
   getConfigs(): Promise<NodeInfo>
   getNodeId(): Promise<NodeId>
   upload(path: string): Promise<UploadResponse>
@@ -17,6 +18,18 @@ export class IpfsApis implements IIpfsApis {
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl
     this.httpClient = new HttpClient(this.baseUrl)
+  }
+
+  async getPeersInfo(): Promise<PeerInfo[]> {
+    const queryPath = '/swarm/peers?verbose=true&timeout=10000ms'
+    try {
+      return await (
+        await this.httpClient.post<PeersInfo>({ queryPath })
+      ).Peers
+    } catch (e) {
+      console.log(e)
+      throw new Error('Failed to get peers info.')
+    }
   }
 
   async getFileRootCid(): Promise<string> {

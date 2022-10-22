@@ -8,10 +8,10 @@ export class IpApis {
     this.httpClient = new HttpClient('http://ip-api.com')
   }
 
-  async getIpInfo(ip: string): Promise<IpInfo> {
+  async getIpInfo(ips: string[]): Promise<IpInfo[]> {
     const queryPath = '/batch'
     try {
-      return (await this.httpClient.post<IpInfo[]>({ queryPath, data: [ip] }))[0]
+      return await this.httpClient.post<IpInfo[]>({ queryPath, data: ips })
     } catch (e) {
       console.log(e)
       throw new Error('Failed to get ip info.')

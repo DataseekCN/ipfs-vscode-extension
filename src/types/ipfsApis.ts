@@ -21,6 +21,16 @@ type File = {
   Type: number
 }
 
+type PeerInfo = {
+  Addr: string
+  Latency: string
+  Peer: string
+}
+
+type PeersInfo = {
+  Peers: PeerInfo[]
+}
+
 type NodeInfo = {
   Addresses: {
     Gateway: string

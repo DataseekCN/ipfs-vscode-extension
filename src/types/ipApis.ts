@@ -5,4 +5,5 @@ export type IpInfo = {
   region: string
   regionName: string
   city: string
+  query: string
 }
