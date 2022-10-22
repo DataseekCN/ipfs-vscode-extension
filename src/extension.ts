@@ -191,9 +191,17 @@ export async function activate(context: vscode.ExtensionContext) {
   //     ipMap.set(ipInfo.query, ipInfo)
   //   })
   // }
+  const ips: string[] = []
   const peersInfo = peersInfoAll.slice(0, 99)
+  peersInfo.forEach((peerInfo) => {
+    ips.push(peerInfo.Addr.split('/')[2])
+  })
+  const ipsInfo = await ipApis.getIpInfo(ips)
+  ipsInfo.forEach((ipInfo: { query: any }) => {
+    ipMap.set(ipInfo.query, ipInfo)
+  })
   const viewContents: ViewContent[] = []
-  peersInfoAll.forEach(async (peerInfo) => {
+  peersInfo.forEach(async (peerInfo) => {
     const ip = peerInfo.Addr.split('/')[2]
 
     const ipInfo = ipMap.get(ip)
