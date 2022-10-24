@@ -46,6 +46,13 @@
           "id": "ipfs-files",
           "name": "FILES"
         }
+      ],
+      "ipfs-panel": [
+        {
+          "type": "webview",
+          "id": "ipfs-panel-stdout",
+          "name": ""
+        }
       ]
     },
     "menus": {
