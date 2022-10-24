@@ -13,7 +13,7 @@ export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDrag
   public onDidChangeTreeData: vscode.Event<any> = this._onDidChangeTreeData.event
 
   private files: File[]
-  private pinnedCid: string[]
+  private pinnedCids: string[]
   private ipfsApis: IIpfsApis
 
   constructor(private context: vscode.ExtensionContext, files: File[], pinnedCid: string[], ipfsApis: IIpfsApis) {
@@ -25,7 +25,7 @@ export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDrag
     })
     context.subscriptions.push(view)
     this.files = files
-    this.pinnedCid = pinnedCid
+    this.pinnedCids = pinnedCid
     this.ipfsApis = ipfsApis
   }
 
@@ -35,7 +35,8 @@ export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDrag
       `${element.Name} (${element.Hash})`,
       element.Type === 1 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None
     )
-    if (this.pinnedCid.includes(element.Hash)) {
+    view.contextValue = element.Hash
+    if (this.pinnedCids.includes(element.Hash)) {
       view.iconPath = {
         light: this.context.asAbsolutePath(path.join('src', 'assets', 'light', 'pin.svg')),
         dark: this.context.asAbsolutePath(path.join('src', 'assets', 'dark', 'pin.svg'))

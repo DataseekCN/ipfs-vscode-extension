@@ -76,7 +76,11 @@
         },
         {
           "command": "ipfs-vscode-extension.setPinning",
-          "when": "view == ipfs-files"
+          "when": "view == ipfs-files && viewItem not in pinnedCids"
+        },
+        {
+          "command": "ipfs-vscode-extension.unsetPinning",
+          "when": "view == ipfs-files && viewItem in pinnedCids"
         }
       ]
     },
@@ -104,6 +108,10 @@
       {
         "command": "ipfs-vscode-extension.setPinning",
         "title": "Set Pinning"
+      },
+      {
+        "command": "ipfs-vscode-extension.unsetPinning",
+        "title": "Unset Pinning"
       }
     ]
   },

@@ -170,12 +170,20 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage(`Set pinning successfully! CID is : ${cid}`)
   })
 
+  const unsetPinning = vscode.commands.registerCommand('ipfs-vscode-extension.unsetPinning', async (args: File) => {
+    const cid = args.Hash
+    //set pinning and change icon
+    vscode.window.showInformationMessage(`Unset pinning successfully! CID is : ${cid}`)
+  })
+
   new ViewNodeInfo(context, nodeInfo)
 
   const rootCid = await ipfsApis.getFileRootCid()
   const files: File[] = await ipfsApis.getFileByCid(rootCid)
-  const pinnedCid = await ipfsApis.getPinnedFile()
-  new ViewFiles(context, files, pinnedCid, ipfsApis)
+  const pinnedCids = await ipfsApis.getPinnedFile()
+  vscode.commands.executeCommand('setContext', 'pinnedCids', pinnedCids)
+
+  new ViewFiles(context, files, pinnedCids, ipfsApis)
 
   const ipMap = new Map()
   const peersInfoAll = await ipfsApis.getPeersInfo()
@@ -216,7 +224,16 @@ export async function activate(context: vscode.ExtensionContext) {
 
   new ViewPeersInfo(context, viewContents, ipfsApis)
 
-  context.subscriptions.push(helloWorld, loadMorePeersInfo, uploadFile, shareLink, copyCid, setPinning, openInWebView)
+  context.subscriptions.push(
+    helloWorld,
+    loadMorePeersInfo,
+    uploadFile,
+    shareLink,
+    copyCid,
+    setPinning,
+    unsetPinning,
+    openInWebView
+  )
 }
 
 // this method is called when your extension is deactivated
