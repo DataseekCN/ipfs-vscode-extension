@@ -174,8 +174,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const rootCid = await ipfsApis.getFileRootCid()
   const files: File[] = await ipfsApis.getFileByCid(rootCid)
-
-  new ViewFiles(context, files, ipfsApis)
+  const pinnedCid = await ipfsApis.getPinnedFile()
+  new ViewFiles(context, files, pinnedCid, ipfsApis)
 
   const ipMap = new Map()
   const peersInfoAll = await ipfsApis.getPeersInfo()

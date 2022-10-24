@@ -1,4 +1,5 @@
 import * as vscode from 'vscode'
+import * as path from 'path'
 import { TreeItem } from 'vscode'
 import { IIpfsApis } from './client/ipfsApis'
 
@@ -12,9 +13,10 @@ export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDrag
   public onDidChangeTreeData: vscode.Event<any> = this._onDidChangeTreeData.event
 
   private files: File[]
+  private pinnedCid: string[]
   private ipfsApis: IIpfsApis
 
-  constructor(context: vscode.ExtensionContext, files: File[], ipfsApis: IIpfsApis) {
+  constructor(private context: vscode.ExtensionContext, files: File[], pinnedCid: string[], ipfsApis: IIpfsApis) {
     const view = vscode.window.createTreeView('ipfs-files', {
       treeDataProvider: this,
       showCollapseAll: true,
@@ -23,15 +25,23 @@ export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDrag
     })
     context.subscriptions.push(view)
     this.files = files
+    this.pinnedCid = pinnedCid
     this.ipfsApis = ipfsApis
   }
 
   getTreeItem(element: File): vscode.TreeItem | Thenable<vscode.TreeItem> {
     // Type 1 on behalf of folder
-    return new TreeItem(
+    const view = new TreeItem(
       `${element.Name} (${element.Hash})`,
       element.Type === 1 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None
     )
+    if (this.pinnedCid.includes(element.Hash)) {
+      view.iconPath = {
+        light: this.context.asAbsolutePath(path.join('src', 'assets', 'light', 'pin.svg')),
+        dark: this.context.asAbsolutePath(path.join('src', 'assets', 'dark', 'pin.svg'))
+      }
+    }
+    return view
   }
 
   getChildren(element?: File): vscode.ProviderResult<File[]> {

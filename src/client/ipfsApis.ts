@@ -3,8 +3,9 @@ import { IHttpClientRequestParameters } from '../types/client'
 const fs = require('fs')
 
 export interface IIpfsApis {
-  getFileRootCid(): Promise<String>
-  getFileByCid(cid: String): Promise<File[]>
+  getFileRootCid(): Promise<string>
+  getFileByCid(cid: string): Promise<File[]>
+  getPinnedFile(): Promise<string[]>
   getPeersInfo(): Promise<PeerInfo[]>
   getConfigs(): Promise<NodeInfo>
   getNodeId(): Promise<NodeId>
@@ -44,9 +45,19 @@ export class IpfsApis implements IIpfsApis {
   }
 
   async getFileByCid(cid: string): Promise<File[]> {
-    const queryPath = 'ls'
+    const queryPath = '/ls'
     try {
       return (await this.httpClient.post<FileByCid>({ queryPath, args: cid })).Objects[0].Links
+    } catch (e) {
+      console.log(e)
+      throw new Error('Failed to get file info.')
+    }
+  }
+
+  async getPinnedFile(): Promise<string[]> {
+    const queryPath = '/pin/ls?type=recursive'
+    try {
+      return Object.keys((await this.httpClient.post<PinnedFiles>({ queryPath })).Keys)
     } catch (e) {
       console.log(e)
       throw new Error('Failed to get file info.')

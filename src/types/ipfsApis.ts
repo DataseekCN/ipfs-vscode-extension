@@ -21,6 +21,10 @@ type File = {
   Type: number
 }
 
+type PinnedFiles = {
+  Keys: object
+}
+
 type PeerInfo = {
   Addr: string
   Latency: string
