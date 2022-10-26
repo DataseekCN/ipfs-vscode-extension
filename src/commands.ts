@@ -56,7 +56,7 @@ export const openInWebView = (gateWay: string) =>
 export const setPinning = (viewFiles: ViewFiles, ipfsApis: IIpfsApis) =>
   vscode.commands.registerCommand('ipfs-vscode-extension.setPinning', async (args: File) => {
     const cid = args.Hash
-    ipfsApis.setPinning(cid)
+    await ipfsApis.setPinning(cid)
     await viewFiles.refresh()
     vscode.window.showInformationMessage(`Set pinning successfully! CID is : ${cid}`)
   })
@@ -64,7 +64,7 @@ export const setPinning = (viewFiles: ViewFiles, ipfsApis: IIpfsApis) =>
 export const unsetPinning = (viewFiles: ViewFiles, ipfsApis: IIpfsApis) =>
   vscode.commands.registerCommand('ipfs-vscode-extension.unsetPinning', async (args: File) => {
     const cid = args.Hash
-    ipfsApis.unsetPinng(cid)
+    await ipfsApis.unsetPinng(cid)
     await viewFiles.refresh()
     vscode.window.showInformationMessage(`Unset pinning successfully! CID is : ${cid}`)
   })
