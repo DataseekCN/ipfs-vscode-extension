@@ -48,8 +48,8 @@ export async function activate(context: vscode.ExtensionContext) {
     uploadFile,
     shareLink,
     copyCid,
-    setPinning(viewFiles),
-    unsetPinning(viewFiles),
+    setPinning(viewFiles, ipfsApis),
+    unsetPinning(viewFiles, ipfsApis),
     openInWebView(nodeInfo.GateWay)
   )
 }

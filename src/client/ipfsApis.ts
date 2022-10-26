@@ -9,6 +9,8 @@ export interface IIpfsApis {
   getPeersInfo(): Promise<PeerInfo[]>
   getConfigs(): Promise<NodeInfo>
   getNodeId(): Promise<NodeId>
+  setPinning(cid: string): Promise<void>
+  unsetPinng(cid: string): Promise<void>
   upload(path: string): Promise<UploadResponse>
 }
 
@@ -19,6 +21,26 @@ export class IpfsApis implements IIpfsApis {
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl
     this.httpClient = new HttpClient(this.baseUrl)
+  }
+
+  async setPinning(cid: string): Promise<void> {
+    const queryPath = `/pin/add?recursive=true&stream=true&arg=${cid}`
+    try {
+      await this.httpClient.post<void>({ queryPath })
+    } catch (e) {
+      console.log(e)
+      throw new Error('Failed to set pinng.')
+    }
+  }
+
+  async unsetPinng(cid: string): Promise<void> {
+    const queryPath = `/pin/rm?recursive=true&arg=${cid}`
+    try {
+      await this.httpClient.post<void>({ queryPath })
+    } catch (e) {
+      console.log(e)
+      throw new Error('Failed to unset pinng.')
+    }
   }
 
   async getPeersInfo(): Promise<PeerInfo[]> {

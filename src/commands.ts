@@ -2,6 +2,7 @@ import * as vscode from 'vscode'
 import * as nodeFs from 'fs'
 import { getWebviewContent } from './methods'
 import { ViewFiles } from './viewFiles'
+import { IIpfsApis, IpfsApis } from './client/ipfsApis'
 
 export const helloWorld = vscode.commands.registerCommand('ipfs-vscode-extension.helloWorld', () => {
   vscode.window.showInformationMessage('Hello World!!!!')
@@ -52,18 +53,18 @@ export const openInWebView = (gateWay: string) =>
     panel.webview.html = getWebviewContent(fileLink)
   })
 
-export const setPinning = (viewFiles: ViewFiles) =>
+export const setPinning = (viewFiles: ViewFiles, ipfsApis: IIpfsApis) =>
   vscode.commands.registerCommand('ipfs-vscode-extension.setPinning', async (args: File) => {
     const cid = args.Hash
-    //set pinning and change icon
+    ipfsApis.setPinning(cid)
     await viewFiles.refresh()
     vscode.window.showInformationMessage(`Set pinning successfully! CID is : ${cid}`)
   })
 
-export const unsetPinning = (viewFiles: ViewFiles) =>
+export const unsetPinning = (viewFiles: ViewFiles, ipfsApis: IIpfsApis) =>
   vscode.commands.registerCommand('ipfs-vscode-extension.unsetPinning', async (args: File) => {
     const cid = args.Hash
-    //set pinning and change icon
+    ipfsApis.unsetPinng(cid)
     await viewFiles.refresh()
     vscode.window.showInformationMessage(`Unset pinning successfully! CID is : ${cid}`)
   })
