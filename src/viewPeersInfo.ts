@@ -11,7 +11,6 @@ export class ViewPeersInfo
   private _onDidChangeTreeData: vscode.EventEmitter<(ViewContent | undefined)[] | undefined> = new vscode.EventEmitter<
     ViewContent[] | undefined
   >()
-  // We want to use an array as the event type, but the API for this is currently being finalized. Until it's finalized, use any.
   public onDidChangeTreeData: vscode.Event<any> = this._onDidChangeTreeData.event
 
   private ipfsApis: IIpfsApis
@@ -27,6 +26,10 @@ export class ViewPeersInfo
     context.subscriptions.push(view)
     this.ipfsApis = ipfsApis
     this.viewContents = viewContents
+  }
+
+  public refresh(): any {
+    this._onDidChangeTreeData.fire(undefined)
   }
 
   getTreeItem(element: ViewContent): vscode.TreeItem | Thenable<vscode.TreeItem> {

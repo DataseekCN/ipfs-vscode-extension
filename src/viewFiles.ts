@@ -2,6 +2,7 @@ import * as vscode from 'vscode'
 import * as path from 'path'
 import { TreeItem } from 'vscode'
 import { IIpfsApis } from './client/ipfsApis'
+import { getViewFileInitData } from './methods'
 
 export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDragAndDropController<File> {
   dropMimeTypes = ['application/vnd.code.tree.ViewFiles']
@@ -9,14 +10,13 @@ export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDrag
   private _onDidChangeTreeData: vscode.EventEmitter<(File | undefined)[] | undefined> = new vscode.EventEmitter<
     File[] | undefined
   >()
-  // We want to use an array as the event type, but the API for this is currently being finalized. Until it's finalized, use any.
   public onDidChangeTreeData: vscode.Event<any> = this._onDidChangeTreeData.event
 
   private files: File[]
   private pinnedCids: string[]
   private ipfsApis: IIpfsApis
 
-  constructor(private context: vscode.ExtensionContext, files: File[], pinnedCid: string[], ipfsApis: IIpfsApis) {
+  constructor(private context: vscode.ExtensionContext, files: File[], pinnedCids: string[], ipfsApis: IIpfsApis) {
     const view = vscode.window.createTreeView('ipfs-files', {
       treeDataProvider: this,
       showCollapseAll: true,
@@ -25,7 +25,7 @@ export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDrag
     })
     context.subscriptions.push(view)
     this.files = files
-    this.pinnedCids = pinnedCid
+    this.pinnedCids = pinnedCids
     this.ipfsApis = ipfsApis
   }
 
@@ -54,5 +54,16 @@ export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDrag
       return children
     }
     return []
+  }
+
+  public async refresh(): Promise<any> {
+    await this._reloadFileData()
+    this._onDidChangeTreeData.fire(undefined)
+  }
+
+  async _reloadFileData(): Promise<void> {
+    const { files, pinnedCids } = await getViewFileInitData(this.ipfsApis)
+    this.files = files
+    this.pinnedCids = pinnedCids
   }
 }

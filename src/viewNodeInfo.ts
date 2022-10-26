@@ -7,7 +7,6 @@ export class ViewNodeInfo implements vscode.TreeDataProvider<TreeItem>, vscode.T
   private _onDidChangeTreeData: vscode.EventEmitter<(TreeItem | undefined)[] | undefined> = new vscode.EventEmitter<
     TreeItem[] | undefined
   >()
-  // We want to use an array as the event type, but the API for this is currently being finalized. Until it's finalized, use any.
   public onDidChangeTreeData: vscode.Event<any> = this._onDidChangeTreeData.event
 
   private nodeInfo: any
