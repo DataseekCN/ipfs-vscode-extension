@@ -182,7 +182,8 @@ export async function activate(context: vscode.ExtensionContext) {
   const files: File[] = await ipfsApis.getFileByCid(rootCid)
   const pinnedCids = await ipfsApis.getPinnedFile()
   vscode.commands.executeCommand('setContext', 'pinnedCids', pinnedCids)
-
+  //关闭插件时候记得set位false
+  vscode.commands.executeCommand('setContext', 'showIpfsPanel', true)
   new ViewFiles(context, files, pinnedCids, ipfsApis)
 
   const ipMap = new Map()

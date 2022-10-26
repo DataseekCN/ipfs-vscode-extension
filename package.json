@@ -1,5 +1,6 @@
 {
   "name": "ipfs-vscode-extension",
+  "publisher": "ipfs",
   "displayName": "ipfs-vscode-extension",
   "description": "IPFS vscode extension",
   "version": "0.0.1",
@@ -12,6 +13,8 @@
   ],
   "activationEvents": [
     "onView:ipfs-node-info",
+    "onView:ipfs-peers",
+    "onView:ipfs-files",
     "onCommand:ipfs-vscode-extension.helloWorld"
   ],
   "main": "./out/extension.js",
@@ -51,7 +54,8 @@
         {
           "type": "webview",
           "id": "ipfs-panel-stdout",
-          "name": ""
+          "name": "",
+          "when": "showIpfsPanel"
         }
       ]
     },
