@@ -61,7 +61,7 @@ export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDrag
     this._onDidChangeTreeData.fire(undefined)
   }
 
-  async _reloadFileData(): Promise<void> {
+  private async _reloadFileData(): Promise<void> {
     const { files, pinnedCids } = await getViewFileInitData(this.ipfsApis)
     this.files = files
     this.pinnedCids = pinnedCids

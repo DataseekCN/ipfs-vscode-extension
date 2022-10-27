@@ -16,6 +16,7 @@ import {
   unsetPinning,
   uploadFile
 } from './commands'
+import { ViewStdout } from './viewStdout'
 const ipdetails = require('node-ip-details')
 
 // import { create, globSource } from 'ipfs-http-client'
@@ -25,6 +26,8 @@ export async function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "ipfs-vscode-extension" is now active!')
+  //点开插件显示panel关闭插件时候记得set位false
+  vscode.commands.executeCommand('setContext', 'showIpfsPanel', true)
 
   const binPath = await downloadIpfsDaemon(context.globalStorageUri)
   const apiPath = initializeDaemon(binPath)
@@ -34,13 +37,10 @@ export async function activate(context: vscode.ExtensionContext) {
   const nodeInfo = await getNodeInfos(ipfsApis)
   const { files, pinnedCids } = await getViewFileInitData(ipfsApis)
   const viewContents = await getPeersInfo(ipfsApis)
-
+  new ViewStdout(context)
   new ViewNodeInfo(context, nodeInfo)
   new ViewPeersInfo(context, viewContents, ipfsApis)
   const viewFiles = new ViewFiles(context, files, pinnedCids, ipfsApis)
-
-  //点开插件显示panel关闭插件时候记得set位false
-  vscode.commands.executeCommand('setContext', 'showIpfsPanel', true)
 
   context.subscriptions.push(
     helloWorld,
