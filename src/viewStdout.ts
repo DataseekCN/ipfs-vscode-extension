@@ -1,3 +1,4 @@
+import { ChildProcess } from 'child_process'
 import * as vscode from 'vscode'
 
 export class ViewStdout implements vscode.WebviewViewProvider {
@@ -5,10 +6,13 @@ export class ViewStdout implements vscode.WebviewViewProvider {
 
   private _view?: vscode.WebviewView
   private _extensionUri: vscode.Uri
-  constructor(context: vscode.ExtensionContext) {
+  private daemon: ChildProcess
+
+  constructor(context: vscode.ExtensionContext, daemon: ChildProcess) {
     const webview = vscode.window.registerWebviewViewProvider('ipfs-panel-stdout', this)
     context.subscriptions.push(webview)
     this._extensionUri = context.extensionUri
+    this.daemon = daemon
   }
 
   public resolveWebviewView(
@@ -32,16 +36,17 @@ export class ViewStdout implements vscode.WebviewViewProvider {
   private _getHtmlForWebview(webview: vscode.Webview) {
     const scriptPathOnDisk = vscode.Uri.joinPath(this._extensionUri, 'src', 'stdout.js')
     const scriptUri = webview.asWebviewUri(scriptPathOnDisk)
+    let log: string = 'init'
+    this.daemon.stdout?.on('data', (chunk) => (log = chunk))
 
     return `<!DOCTYPE html>
     <html>
-    <head>
-    <script type="text/javascript" src="${scriptUri}"></script>
-    </head>
-    <body>
-    <div>这里是页面内容，最后放JavaScript代码</div>
-    <script type="text/javascript"> abc() </script>
-    </body>
+      <head>
+        <script type="text/javascript" src="${scriptUri}"></script>
+      </head>
+      <body>
+        <script type="text/javascript"> writeStdoutToHtml(); </script>
+      </body>
     </html>`
   }
 }

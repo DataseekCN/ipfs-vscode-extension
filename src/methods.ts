@@ -1,4 +1,4 @@
-import { IIpfsApis, IpfsApis } from './client/ipfsApis'
+import { IIpfsApis } from './client/ipfsApis'
 import * as vscode from 'vscode'
 import * as nodeFs from 'fs'
 import nodePath = require('node:path')
@@ -9,6 +9,7 @@ import { Uri } from 'vscode'
 import { IpApis } from './client/ipApis'
 import { ViewContent } from './types/viewPeersInfo'
 import countryCodeEmoji from 'country-code-emoji'
+import { Daemon, NodeInfos, ViewFileInitData } from './types/methods'
 
 export const downloadIpfsDaemon = async (globalStorageUri: Uri): Promise<string> => {
   const fs = vscode.workspace.fs
@@ -49,13 +50,13 @@ export const downloadIpfsDaemon = async (globalStorageUri: Uri): Promise<string>
   return binPath
 }
 
-export const initializeDaemon = (binPath: string): string => {
+export const initializeDaemon = (binPath: string): Daemon => {
   const exePath = nodePath.join(binPath, 'kubo', 'ipfs')
   console.log('Initializing daemon...')
   const daemon = execFile(exePath, ['daemon', '--init'])
   const daemonOutput = vscode.window.createOutputChannel('IPFS Daemon')
   daemon.stdout?.on('data', (chunk) => daemonOutput.append(chunk))
-  return 'http://127.0.0.1:5001/api/v0'
+  return { daemon, apiPath: 'http://127.0.0.1:5001/api/v0' }
 }
 
 export const getViewFileInitData = async (ipfsApis: IIpfsApis): Promise<ViewFileInitData> => {
