@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 import { TreeItem } from 'vscode'
 
-export class ViewNodeInfo implements vscode.TreeDataProvider<TreeItem>, vscode.TreeDragAndDropController<TreeItem> {
+export class ViewNodeInfo implements vscode.TreeDataProvider<TreeItem> {
   dropMimeTypes = ['application/vnd.code.tree.ViewNodeInfo']
   dragMimeTypes = ['text/uri-list']
   private _onDidChangeTreeData: vscode.EventEmitter<(TreeItem | undefined)[] | undefined> = new vscode.EventEmitter<

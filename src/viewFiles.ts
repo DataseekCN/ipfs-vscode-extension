@@ -4,7 +4,7 @@ import { TreeItem } from 'vscode'
 import { IIpfsApis } from './client/ipfsApis'
 import { getViewFileInitData } from './methods'
 
-export class ViewFiles implements vscode.TreeDataProvider<File>, vscode.TreeDragAndDropController<File> {
+export class ViewFiles implements vscode.TreeDataProvider<File> {
   dropMimeTypes = ['application/vnd.code.tree.ViewFiles']
   dragMimeTypes = ['text/uri-list']
   private _onDidChangeTreeData: vscode.EventEmitter<(File | undefined)[] | undefined> = new vscode.EventEmitter<

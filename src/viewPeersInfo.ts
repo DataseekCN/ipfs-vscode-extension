@@ -3,9 +3,7 @@ import { TreeItem } from 'vscode'
 import { IIpfsApis } from './client/ipfsApis'
 import { ViewContent } from './types/viewPeersInfo'
 
-export class ViewPeersInfo
-  implements vscode.TreeDataProvider<ViewContent>, vscode.TreeDragAndDropController<ViewContent>
-{
+export class ViewPeersInfo implements vscode.TreeDataProvider<ViewContent> {
   dropMimeTypes = ['application/vnd.code.tree.ViewPeersInfo']
   dragMimeTypes = ['text/uri-list']
   private _onDidChangeTreeData: vscode.EventEmitter<(ViewContent | undefined)[] | undefined> = new vscode.EventEmitter<
