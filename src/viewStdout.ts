@@ -6,9 +6,9 @@ export class ViewStdout implements vscode.WebviewViewProvider {
 
   private _view?: vscode.WebviewView
   private _extensionUri: vscode.Uri
-  private daemon: ChildProcess
+  private daemon?: ChildProcess
 
-  constructor(context: vscode.ExtensionContext, daemon: ChildProcess) {
+  constructor(context: vscode.ExtensionContext, daemon?: ChildProcess) {
     const webview = vscode.window.registerWebviewViewProvider('ipfs-panel-stdout', this)
     context.subscriptions.push(webview)
     this._extensionUri = context.extensionUri
@@ -37,7 +37,7 @@ export class ViewStdout implements vscode.WebviewViewProvider {
     const scriptPathOnDisk = vscode.Uri.joinPath(this._extensionUri, 'src', 'stdout.js')
     const scriptUri = webview.asWebviewUri(scriptPathOnDisk)
     let log: string = 'init'
-    this.daemon.stdout?.on('data', (chunk) => (log = chunk))
+    this.daemon?.stdout?.on('data', (chunk) => (log = chunk))
 
     return `<!DOCTYPE html>
     <html>

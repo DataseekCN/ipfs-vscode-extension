@@ -23,15 +23,21 @@ const getIpfsConfig = async () => {
   }
 }
 
+const isDaemonAlreadyExists = async (api: string) => {
+  try {
+    await got.post(`${api}/id`)
+    return true
+  } catch {
+    return false
+  }
+}
+
 const waitDaemon = async (api: string) => {
   let retryLimit = 10
   while (retryLimit-- > 0) {
     try {
-      const { statusCode, statusMessage } = await got.post(`${api}/id`)
-      if (statusCode === 200) {
-        return
-      }
-      throw new Error(statusMessage)
+      await got.post(`${api}/id`)
+      return
     } catch (error: any) {
       console.error(error.message)
       await new Promise((r) => setTimeout(r, 1000))
@@ -42,9 +48,13 @@ const waitDaemon = async (api: string) => {
 }
 
 export const initializeDaemon = async (binPath: string) => {
-  const exePath = path.join(binPath, 'kubo', 'ipfs')
-  console.log('Initializing daemon...')
   const { api } = await getIpfsConfig()
+  if (await isDaemonAlreadyExists(api)) {
+    console.log(`Daemon already exists on ${api}, using the existing one.`)
+    return { daemon: undefined, api }
+  }
+  console.log('Initializing daemon...')
+  const exePath = path.join(binPath, 'kubo', 'ipfs')
   const daemon = execFile(exePath, ['daemon', '--init'])
   await waitDaemon(api)
   return { daemon, api }
