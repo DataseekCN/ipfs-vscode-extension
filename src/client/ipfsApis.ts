@@ -1,5 +1,6 @@
 import { HttpClient, IHttpClient } from './client'
 import { IHttpClientRequestParameters } from '../types/client'
+import * as FormData from 'form-data'
 const fs = require('fs')
 
 export interface IIpfsApis {
@@ -11,7 +12,7 @@ export interface IIpfsApis {
   getNodeId(): Promise<NodeId>
   setPinning(cid: string): Promise<void>
   unsetPinng(cid: string): Promise<void>
-  upload(path: string): Promise<UploadResponse>
+  upload(parameters: { formData: FormData; baseDir?: string; isDir?: boolean }): Promise<UploadResponse>
 }
 
 export class IpfsApis implements IIpfsApis {
@@ -106,21 +107,36 @@ export class IpfsApis implements IIpfsApis {
     }
   }
 
-  async upload(path: string): Promise<UploadResponse> {
-    const parameters: IHttpClientRequestParameters = {
-      queryPath: '/id',
-      data: '',
+  async upload(parameters: { formData: FormData; baseDir?: string; isDir?: boolean }): Promise<UploadResponse> {
+    const { formData, baseDir, isDir } = parameters
+    const uploadToNode: IHttpClientRequestParameters = {
+      queryPath: '/add?stream-channels=true&pin=false&wrap-with-directory=false&progress=false',
+      data: formData,
       options: {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       }
     }
-    try {
-      return await this.httpClient.post<UploadResponse>(parameters)
-    } catch (e) {
-      console.log(e)
-      throw new Error('Failed to get nodeId info.')
+
+    const cpToDir: IHttpClientRequestParameters = {
+      queryPath: '/files/cp'
+    }
+    if (isDir) {
+      return await this.httpClient.post<UploadResponse>(cpToDir)
+    } else {
+      try {
+        const { Hash, Name } = await this.httpClient.post<UploadResponse>(uploadToNode)
+        console.log(Hash)
+        console.log(Name)
+        const queryString = `?arg=${encodeURI('/ipfs/' + Hash)}&arg=${encodeURI('/' + Name)}`
+        cpToDir.queryPath = cpToDir.queryPath + queryString
+        console.log(cpToDir.queryPath)
+        return await this.httpClient.post<UploadResponse>(cpToDir)
+      } catch (e) {
+        console.log(e)
+        throw new Error('Failed to get nodeId info.')
+      }
     }
   }
 }
