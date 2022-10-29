@@ -9,11 +9,11 @@ type Stat = {
 type FileByCid = {
   Objects: {
     Hash: string
-    Links: File[]
+    Links: IpfsFile[]
   }[]
 }
 
-type File = {
+type IpfsFile = {
   Hash: string
   Name: string
   Size: number

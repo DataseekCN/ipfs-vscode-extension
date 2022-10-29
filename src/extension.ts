@@ -30,7 +30,7 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.commands.executeCommand('setContext', 'showIpfsPanel', true)
 
   const binPath = await downloadIpfsDaemon(context.globalStorageUri)
-  const { daemon, api } = await initializeDaemon(binPath)
+  const { daemonLogger, api } = await initializeDaemon(binPath)
 
   const ipfsApis = new IpfsApis(api)
 
@@ -38,7 +38,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const { files, pinnedCids } = await getViewFileInitData(ipfsApis)
   const viewContents = await getPeersInfo(ipfsApis)
 
-  new ViewStdout(context, daemon)
+  new ViewStdout(context, daemonLogger)
   new ViewNodeInfo(context, nodeInfo)
   new ViewPeersInfo(context, viewContents, ipfsApis)
   const viewFiles = new ViewFiles(context, files, pinnedCids, ipfsApis)

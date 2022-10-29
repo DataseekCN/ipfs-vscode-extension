@@ -1,22 +1,22 @@
-import * as vscode from 'vscode'
 import * as path from 'path'
+import * as vscode from 'vscode'
 import { TreeItem } from 'vscode'
 import { IIpfsApis } from './client/ipfsApis'
 import { getViewFileInitData } from './methods'
 
-export class ViewFiles implements vscode.TreeDataProvider<File> {
+export class ViewFiles implements vscode.TreeDataProvider<IpfsFile> {
   dropMimeTypes = ['application/vnd.code.tree.ViewFiles']
   dragMimeTypes = ['text/uri-list']
-  private _onDidChangeTreeData: vscode.EventEmitter<(File | undefined)[] | undefined> = new vscode.EventEmitter<
-    File[] | undefined
+  private _onDidChangeTreeData: vscode.EventEmitter<(IpfsFile | undefined)[] | undefined> = new vscode.EventEmitter<
+    IpfsFile[] | undefined
   >()
   public onDidChangeTreeData: vscode.Event<any> = this._onDidChangeTreeData.event
 
-  private files: File[]
+  private files: IpfsFile[]
   private pinnedCids: string[]
   private ipfsApis: IIpfsApis
 
-  constructor(private context: vscode.ExtensionContext, files: File[], pinnedCids: string[], ipfsApis: IIpfsApis) {
+  constructor(private context: vscode.ExtensionContext, files: IpfsFile[], pinnedCids: string[], ipfsApis: IIpfsApis) {
     const view = vscode.window.createTreeView('ipfs-files', {
       treeDataProvider: this,
       showCollapseAll: true,
@@ -29,7 +29,7 @@ export class ViewFiles implements vscode.TreeDataProvider<File> {
     this.ipfsApis = ipfsApis
   }
 
-  getTreeItem(element: File): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(element: IpfsFile): vscode.TreeItem | Thenable<vscode.TreeItem> {
     // Type 1 on behalf of folder
     const view = new TreeItem(
       `${element.Name} (${element.Hash})`,
@@ -45,7 +45,7 @@ export class ViewFiles implements vscode.TreeDataProvider<File> {
     return view
   }
 
-  getChildren(element?: File): vscode.ProviderResult<File[]> {
+  getChildren(element?: IpfsFile): vscode.ProviderResult<IpfsFile[]> {
     if (!element) {
       return this.files
     }

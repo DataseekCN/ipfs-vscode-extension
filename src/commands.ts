@@ -1,12 +1,12 @@
-import * as vscode from 'vscode'
-import * as nodeFs from 'fs'
-import * as nodePath from 'path'
-import { getWebviewContent } from './methods'
-import { ViewFiles } from './viewFiles'
-import { IIpfsApis, IpfsApis } from './client/ipfsApis'
 import * as FormData from 'form-data'
 import { AppendOptions } from 'form-data'
+import * as nodeFs from 'fs'
 import { glob } from 'glob'
+import * as nodePath from 'path'
+import * as vscode from 'vscode'
+import { IIpfsApis, IpfsApis } from './client/ipfsApis'
+import { getWebviewContent } from './methods'
+import { ViewFiles } from './viewFiles'
 
 export const helloWorld = vscode.commands.registerCommand('ipfs-vscode-extension.helloWorld', () => {
   vscode.window.showInformationMessage('Hello World!!!!')
@@ -66,20 +66,20 @@ function toQueryString(str: string) {
   return str.replaceAll('/', '%2F')
 }
 
-export const shareLink = vscode.commands.registerCommand('ipfs-vscode-extension.shareLink', (args: File) => {
+export const shareLink = vscode.commands.registerCommand('ipfs-vscode-extension.shareLink', (args: IpfsFile) => {
   const shareLink = `https://ipfs.io/ipfs/${args.Hash}?filename=${args.Name}`
   vscode.env.clipboard.writeText(shareLink)
   vscode.window.showInformationMessage(`Copy link completed! Links is : ${shareLink}`)
 })
 
-export const copyCid = vscode.commands.registerCommand('ipfs-vscode-extension.copyCid', (args: File) => {
+export const copyCid = vscode.commands.registerCommand('ipfs-vscode-extension.copyCid', (args: IpfsFile) => {
   const cid = args.Hash
   vscode.env.clipboard.writeText(cid)
   vscode.window.showInformationMessage(`Copy CID completed! CID is : ${cid}`)
 })
 
 export const openInWebView = (gateWay: string) =>
-  vscode.commands.registerCommand('ipfs-vscode-extension.openInWebView', (args: File) => {
+  vscode.commands.registerCommand('ipfs-vscode-extension.openInWebView', (args: IpfsFile) => {
     const fileLink = `${gateWay}/ipfs/${args.Hash}?filename=${args.Name}`
     const panel = vscode.window.createWebviewPanel('Webview', args.Name, vscode.ViewColumn.One, {
       enableScripts: true,
@@ -89,7 +89,7 @@ export const openInWebView = (gateWay: string) =>
   })
 
 export const setPinning = (viewFiles: ViewFiles, ipfsApis: IIpfsApis) =>
-  vscode.commands.registerCommand('ipfs-vscode-extension.setPinning', async (args: File) => {
+  vscode.commands.registerCommand('ipfs-vscode-extension.setPinning', async (args: IpfsFile) => {
     const cid = args.Hash
     await ipfsApis.setPinning(cid)
     await viewFiles.refresh()
@@ -97,7 +97,7 @@ export const setPinning = (viewFiles: ViewFiles, ipfsApis: IIpfsApis) =>
   })
 
 export const unsetPinning = (viewFiles: ViewFiles, ipfsApis: IIpfsApis) =>
-  vscode.commands.registerCommand('ipfs-vscode-extension.unsetPinning', async (args: File) => {
+  vscode.commands.registerCommand('ipfs-vscode-extension.unsetPinning', async (args: IpfsFile) => {
     const cid = args.Hash
     await ipfsApis.unsetPinng(cid)
     await viewFiles.refresh()

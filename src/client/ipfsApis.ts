@@ -1,10 +1,10 @@
-import { HttpClient, IHttpClient } from './client'
-import { IHttpClientRequestParameters } from '../types/client'
 import * as FormData from 'form-data'
+import { IHttpClientRequestParameters } from '../types/client'
+import { HttpClient, IHttpClient } from './client'
 
 export interface IIpfsApis {
   getFileRootCid(): Promise<string>
-  getFileByCid(cid: string): Promise<File[]>
+  getFileByCid(cid: string): Promise<IpfsFile[]>
   getPinnedFile(): Promise<string[]>
   getPeersInfo(): Promise<PeerInfo[]>
   getConfigs(): Promise<NodeInfo>
@@ -66,7 +66,7 @@ export class IpfsApis implements IIpfsApis {
     }
   }
 
-  async getFileByCid(cid: string): Promise<File[]> {
+  async getFileByCid(cid: string): Promise<IpfsFile[]> {
     const queryPath = '/ls'
     try {
       return (await this.httpClient.post<FileByCid>({ queryPath, args: cid })).Objects[0].Links

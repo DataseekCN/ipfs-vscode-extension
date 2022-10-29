@@ -1,5 +1,5 @@
 export type ViewFileInitData = {
-  files: File[]
+  files: IpfsFile[]
   pinnedCids: string[]
 }
 

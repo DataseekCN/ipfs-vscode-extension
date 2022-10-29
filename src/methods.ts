@@ -51,7 +51,7 @@ export const downloadIpfsDaemon = async (globalStorageUri: Uri): Promise<string>
 
 export const getViewFileInitData = async (ipfsApis: IIpfsApis): Promise<ViewFileInitData> => {
   const rootCid = await ipfsApis.getFileRootCid()
-  const files: File[] = await ipfsApis.getFileByCid(rootCid)
+  const files: IpfsFile[] = await ipfsApis.getFileByCid(rootCid)
   const pinnedCids = await ipfsApis.getPinnedFile()
   vscode.commands.executeCommand('setContext', 'pinnedCids', pinnedCids)
   return {

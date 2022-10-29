@@ -3,6 +3,7 @@ import { promises as fs } from 'fs'
 import got from 'got'
 import { homedir } from 'os'
 import * as path from 'path/posix'
+import { DaemonLogger } from './daemonLogger'
 
 const CONFIG_PATH = path.join(homedir(), '.ipfs', 'config')
 
@@ -51,11 +52,12 @@ export const initializeDaemon = async (binPath: string) => {
   const { api } = await getIpfsConfig()
   if (await isDaemonAlreadyExists(api)) {
     console.log(`Daemon already exists on ${api}, using the existing one.`)
-    return { daemon: undefined, api }
+    return { daemonLogger: undefined, api }
   }
   console.log('Initializing daemon...')
   const exePath = path.join(binPath, 'kubo', 'ipfs')
   const daemon = execFile(exePath, ['daemon', '--init'])
+  const daemonLogger = new DaemonLogger(daemon)
   await waitDaemon(api)
-  return { daemon, api }
+  return { daemonLogger, api }
 }
