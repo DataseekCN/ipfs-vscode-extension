@@ -1,11 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode'
-import { ViewFiles } from './viewFiles'
-import { ViewNodeInfo } from './viewNodeInfo'
 import { IpfsApis } from './client/ipfsApis'
-import { ViewPeersInfo } from './viewPeersInfo'
-import { downloadIpfsDaemon, getNodeInfos, getPeersInfo, getViewFileInitData, initializeDaemon } from './methods'
 import {
   copyCid,
   helloWorld,
@@ -16,8 +12,12 @@ import {
   unsetPinning,
   uploadFile
 } from './commands'
+import { initializeDaemon } from './ipfsDaemon'
+import { downloadIpfsDaemon, getNodeInfos, getPeersInfo, getViewFileInitData } from './methods'
+import { ViewFiles } from './viewFiles'
+import { ViewNodeInfo } from './viewNodeInfo'
+import { ViewPeersInfo } from './viewPeersInfo'
 import { ViewStdout } from './viewStdout'
-const ipdetails = require('node-ip-details')
 
 // import { create, globSource } from 'ipfs-http-client'
 // this method is called when your extension is activated
@@ -30,9 +30,9 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.commands.executeCommand('setContext', 'showIpfsPanel', true)
 
   const binPath = await downloadIpfsDaemon(context.globalStorageUri)
-  const { daemon, apiPath } = initializeDaemon(binPath)
+  const { daemon, api } = await initializeDaemon(binPath)
 
-  const ipfsApis = new IpfsApis(apiPath)
+  const ipfsApis = new IpfsApis(api)
 
   const nodeInfo = await getNodeInfos(ipfsApis)
   const { files, pinnedCids } = await getViewFileInitData(ipfsApis)
