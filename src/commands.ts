@@ -6,12 +6,13 @@ import { ViewFiles } from './viewFiles'
 import { IIpfsApis, IpfsApis } from './client/ipfsApis'
 import * as FormData from 'form-data'
 import { AppendOptions } from 'form-data'
+import { glob } from 'glob'
 
 export const helloWorld = vscode.commands.registerCommand('ipfs-vscode-extension.helloWorld', () => {
   vscode.window.showInformationMessage('Hello World!!!!')
 })
 
-export const uploadFile = (ipfsApis: IpfsApis) => {
+export const uploadFile = (viewFiles: ViewFiles, ipfsApis: IpfsApis) => {
   return vscode.commands.registerCommand('ipfs-vscode-extension.uploadFile', () => {
     // more select options see here
     const options: vscode.OpenDialogOptions = {
@@ -22,6 +23,25 @@ export const uploadFile = (ipfsApis: IpfsApis) => {
       if (fileUri && fileUri[0]) {
         const stat = nodeFs.statSync(fileUri[0].fsPath)
         if (stat.isDirectory()) {
+          const formData = new FormData()
+          const filenames = glob.sync('**/**', { cwd: fileUri[0].fsPath })
+          const dirName = nodePath.basename(fileUri[0].fsPath)
+          console.log(dirName)
+          if (filenames.length > 0) {
+            for (const filename of filenames) {
+              const filePath = `${fileUri[0].fsPath}/${filename}`
+              const filenameIPFS = toQueryString(`${dirName}/${filename}`)
+              if (nodeFs.statSync(filePath).isFile()) {
+                const options: AppendOptions = {
+                  filename: filenameIPFS
+                }
+                console.log(filenameIPFS)
+                formData.append(filenameIPFS, nodeFs.readFileSync(filePath), options)
+              }
+            }
+            await ipfsApis.upload({ formData, baseDir: dirName, isDir: true })
+            console.log(`${dirName}文件夹上传成功`)
+          }
         } else if (stat.isFile()) {
           const formData = new FormData()
           const filename = nodePath.basename(fileUri[0].fsPath)
@@ -30,19 +50,20 @@ export const uploadFile = (ipfsApis: IpfsApis) => {
           }
           formData.append(filename, nodeFs.readFileSync(fileUri[0].fsPath), options)
           console.log(filename)
-          const res = await ipfsApis.upload({ formData: formData })
-          console.log(res)
-          // const ipfs = await create()
-          // const file = await ipfs.addAll(globSource())
-          // console.log(file)
-          // ipfsApis.upload(fileUri[0].fsPath)
+          await ipfsApis.upload({ formData: formData })
+          console.log(`${filename}文件上传成功`)
         } else {
           throw new Error('something wrong with the file system')
         }
+        await viewFiles.refresh()
         vscode.window.showInformationMessage(fileUri[0].fsPath)
       }
     })
   })
+}
+
+function toQueryString(str: string) {
+  return str.replaceAll('/', '%2F')
 }
 
 export const shareLink = vscode.commands.registerCommand('ipfs-vscode-extension.shareLink', (args: File) => {

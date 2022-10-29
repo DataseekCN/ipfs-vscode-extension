@@ -1,7 +1,6 @@
 import { HttpClient, IHttpClient } from './client'
 import { IHttpClientRequestParameters } from '../types/client'
 import * as FormData from 'form-data'
-const fs = require('fs')
 
 export interface IIpfsApis {
   getFileRootCid(): Promise<string>
@@ -123,19 +122,31 @@ export class IpfsApis implements IIpfsApis {
       queryPath: '/files/cp'
     }
     if (isDir) {
-      return await this.httpClient.post<UploadResponse>(cpToDir)
+      const dirUploadRes = (await this.httpClient.post<UploadResponse>(uploadToNode)) as unknown as string
+      const regex = new RegExp(`(\{"Name":"${baseDir}".+\})`)
+      console.log(baseDir)
+      console.log(dirUploadRes)
+      console.log(dirUploadRes.match(regex))
+      const arr = dirUploadRes.match(regex)
+      if (arr) {
+        const target = arr[0]
+        const obj = JSON.parse(target)
+        console.log(obj)
+        const queryString = `?arg=${encodeURI('/ipfs/' + obj.Hash)}&arg=${encodeURI('/' + obj.Name)}`
+        cpToDir.queryPath = cpToDir.queryPath + queryString
+        return await this.httpClient.post<UploadResponse>(cpToDir)
+      } else {
+        throw new Error('Failed to upload dir.')
+      }
     } else {
       try {
         const { Hash, Name } = await this.httpClient.post<UploadResponse>(uploadToNode)
-        console.log(Hash)
-        console.log(Name)
         const queryString = `?arg=${encodeURI('/ipfs/' + Hash)}&arg=${encodeURI('/' + Name)}`
         cpToDir.queryPath = cpToDir.queryPath + queryString
-        console.log(cpToDir.queryPath)
         return await this.httpClient.post<UploadResponse>(cpToDir)
       } catch (e) {
         console.log(e)
-        throw new Error('Failed to get nodeId info.')
+        throw new Error('Failed to upload file.')
       }
     }
   }

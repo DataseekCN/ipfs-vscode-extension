@@ -46,7 +46,7 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     helloWorld,
     loadMorePeersInfo,
-    uploadFile(ipfsApis),
+    uploadFile(viewFiles, ipfsApis),
     shareLink,
     copyCid,
     setPinning(viewFiles, ipfsApis),
