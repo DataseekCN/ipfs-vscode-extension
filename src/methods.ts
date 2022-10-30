@@ -86,7 +86,8 @@ export const getPeersInfo = async (ipfsApis: IIpfsApis, ipfsGateway: string): Pr
         countryCode: 'Unknown',
         city: 'Unknown'
       }))
-      const emoj = ipInfo.status === 'success' ? countryCodeEmoji(ipInfo.countryCode) : '🌏'
+      const emoj =
+        ipInfo.status === 'success' ? countryCodeEmoji(ipInfo.countryCode == 'TW' ? 'CN' : ipInfo.countryCode) : '🌏'
       const children: ViewContent[] = [
         { content: `Location: ${ipInfo.country || 'Unknown'}, ${ipInfo.city || 'Unknown'}`, isFather: false },
         { content: `Latency: ${peerInfo.Latency}`, isFather: false },
