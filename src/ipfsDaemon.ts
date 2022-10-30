@@ -10,16 +10,19 @@ const CONFIG_PATH = path.join(homedir(), '.ipfs', 'config')
 const getIpfsConfig = async () => {
   try {
     const config = JSON.parse(await fs.readFile(CONFIG_PATH, 'utf-8'))
-    const [, , address, , port] = config.Addresses.API.split('/')
+    const [, , apiAddress, , apiPort] = config.Addresses.API.split('/')
+    const [, , gatewayAddress, , gatewayPort] = config.Addresses.Gateway.split('/')
 
     return {
-      api: `http://${address}:${port}/api/v0`
+      api: `http://${apiAddress}:${apiPort}/api/v0`,
+      gateway: `http://${gatewayAddress}:${gatewayPort}`
     }
   } catch (error) {
     console.error(error)
 
     return {
-      api: 'http://127.0.0.1:5001/api/v0'
+      api: 'http://127.0.0.1:5001/api/v0',
+      gateway: 'http://127.0.0.1:8080'
     }
   }
 }
@@ -49,15 +52,19 @@ const waitDaemon = async (api: string) => {
 }
 
 export const initializeDaemon = async (binPath: string) => {
-  const { api } = await getIpfsConfig()
+  const { api, gateway } = await getIpfsConfig()
+
   if (await isDaemonAlreadyExists(api)) {
     console.log(`Daemon already exists on ${api}, using the existing one.`)
-    return { daemonLogger: undefined, api }
+    return { daemonLogger: undefined, api, gateway }
   }
+
   console.log('Initializing daemon...')
   const exePath = path.join(binPath, 'kubo', 'ipfs')
   const daemon = execFile(exePath, ['daemon', '--init'])
   const daemonLogger = new DaemonLogger(daemon)
+
   await waitDaemon(api)
-  return { daemonLogger, api }
+
+  return { daemonLogger, api, gateway }
 }

@@ -78,9 +78,9 @@ export const copyCid = vscode.commands.registerCommand('ipfs-vscode-extension.co
   vscode.window.showInformationMessage(`Copy CID completed! CID is : ${cid}`)
 })
 
-export const openInWebView = (gateWay: string) =>
+export const openInWebView = (gateway: string) =>
   vscode.commands.registerCommand('ipfs-vscode-extension.openInWebView', (args: IpfsFile) => {
-    const fileLink = `${gateWay}/ipfs/${args.Hash}?filename=${args.Name}`
+    const fileLink = `${gateway}/ipfs/${args.Hash}?filename=${args.Name}`
     const panel = vscode.window.createWebviewPanel('Webview', args.Name, vscode.ViewColumn.One, {
       enableScripts: true,
       retainContextWhenHidden: true

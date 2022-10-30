@@ -3,9 +3,10 @@ import * as nodeFs from 'fs'
 import got from 'got'
 import * as vscode from 'vscode'
 import { Uri } from 'vscode'
-import { IpApis } from './client/ipApis'
 import { IIpfsApis } from './client/ipfsApis'
 import { getDownloadURL, unpack } from './download/newDownload'
+import { lookup } from './lib/geoip'
+import { IpInfo } from './types/ipApis'
 import { NodeInfos, ViewFileInitData } from './types/methods'
 import { ViewContent } from './types/viewPeersInfo'
 import nodePath = require('node:path')
@@ -73,45 +74,29 @@ export const getNodeInfos = async (ipfsApis: IIpfsApis): Promise<NodeInfos> => {
   }
 }
 
-export const getPeersInfo = async (ipfsApis: IIpfsApis): Promise<ViewContent[]> => {
-  const ipApis = new IpApis()
-  const ipMap = new Map()
+export const getPeersInfo = async (ipfsApis: IIpfsApis, ipfsGateway: string): Promise<ViewContent[]> => {
   const peersInfoAll = await ipfsApis.getPeersInfo()
-  // const queryBatch = Math.trunc(peersInfoAll.length / 100)
-  // for (let i = 0; i < queryBatch && i < 15; i++) {
-  //   const peersInfo = peersInfoAll.slice(i * 100, i * 100 + 99)
-  //   const ips: string[] = []
-  //   peersInfo.forEach((peerInfo) => {
-  //     ips.push(peerInfo.Addr.split('/')[2])
-  //   })
-  //   const ipsInfo = await ipApis.getIpInfo(ips)
-  //   ipsInfo.forEach((ipInfo: { query: any }) => {
-  //     ipMap.set(ipInfo.query, ipInfo)
-  //   })
-  // }
-  const ips: string[] = []
   const peersInfo = peersInfoAll.slice(0, 99)
-  peersInfo.forEach((peerInfo) => {
-    ips.push(peerInfo.Addr.split('/')[2])
-  })
-  const ipsInfo = await ipApis.getIpInfo(ips)
-  ipsInfo.forEach((ipInfo: { query: any }) => {
-    ipMap.set(ipInfo.query, ipInfo)
-  })
-  const viewContents: ViewContent[] = []
-  peersInfo.forEach(async (peerInfo) => {
-    const ip = peerInfo.Addr.split('/')[2]
 
-    const ipInfo = ipMap.get(ip)
-    const emoj = ipInfo.status === 'success' ? countryCodeEmoji(ipInfo.countryCode) : '🌏'
-    const children: ViewContent[] = []
-    children.push({ content: `Location: ${ipInfo.country}, ${ipInfo.regionName}`, isFather: false })
-    children.push({ content: `Latency: ${peerInfo.Latency}`, isFather: false })
-    children.push({ content: `Peer ID: ${peerInfo.Peer}`, isFather: false })
-    children.push({ content: `Connection: ${peerInfo.Addr}`, isFather: false })
-    viewContents.push({ content: `${emoj} ${ipInfo.countryCode} (${peerInfo.Peer})`, isFather: true, children })
-  })
-  return viewContents
+  return await Promise.all(
+    peersInfo.map(async (peerInfo) => {
+      const ip = peerInfo.Addr.split('/')[2]
+      const ipInfo: IpInfo = await lookup(ipfsGateway, ip).catch(() => ({
+        status: 'failed',
+        country: 'Unknown',
+        countryCode: 'Unknown',
+        city: 'Unknown'
+      }))
+      const emoj = ipInfo.status === 'success' ? countryCodeEmoji(ipInfo.countryCode) : '🌏'
+      const children: ViewContent[] = [
+        { content: `Location: ${ipInfo.country || 'Unknown'}, ${ipInfo.city || 'Unknown'}`, isFather: false },
+        { content: `Latency: ${peerInfo.Latency}`, isFather: false },
+        { content: `Peer ID: ${peerInfo.Peer}`, isFather: false },
+        { content: `Connection: ${peerInfo.Addr}`, isFather: false }
+      ]
+      return { content: `${emoj} ${ipInfo.countryCode || 'Unknown'} (${peerInfo.Peer})`, isFather: true, children }
+    })
+  )
 }
 
 export const getWebviewContent = (link: String) => {
@@ -128,9 +113,8 @@ export const getWebviewContent = (link: String) => {
       </style>
     </head>
     <body>
-      <div id="wrap">
-        <iframe src="${link}"></iframe>
-      </div>
+      <iframe src="${link}"></iframe>
     </body>
-    </html>`
+    </html>
+  `
 }

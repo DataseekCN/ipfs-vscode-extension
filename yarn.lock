@@ -178,6 +178,19 @@
   dependencies:
     chalk "^4.1.0"
 
+"@common.js/mimic-fn@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@common.js/mimic-fn/-/mimic-fn-4.0.0.tgz#278b5e3033f68a225f39d23133985e94521484c1"
+  integrity sha512-rIfc8442W1fRQxU7IZp6E0pTT9NybTAse56LhjL3SexZdjC8/p4Ja9lCRjADCg4LSNQHZC48RdWadxzAjq2eQA==
+
+"@common.js/p-memoize@^7.1.1":
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/@common.js/p-memoize/-/p-memoize-7.1.1.tgz#c7645200fb75cbfdf9d639ebdc7a5c1d824ff997"
+  integrity sha512-wF0Xsir52FBcLgDJdIy4Y4SunFfeEGJUKABqKFoMZnahxkacVvZi33MpYWnKBajutys4r+9Ha90aGfOHh9P1og==
+  dependencies:
+    "@common.js/mimic-fn" "^4.0.0"
+    type-fest "^3.0.0"
+
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
   resolved "https://registry.npmjs.org/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz"
@@ -224,7 +237,7 @@
   resolved "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@ipld/dag-cbor@^7.0.0", "@ipld/dag-cbor@^7.0.1":
+"@ipld/dag-cbor@^7.0.0", "@ipld/dag-cbor@^7.0.1", "@ipld/dag-cbor@^7.0.3":
   version "7.0.3"
   resolved "https://registry.npmmirror.com/@ipld/dag-cbor/-/dag-cbor-7.0.3.tgz"
   integrity sha512-1VVh2huHsuohdXC1bGJNE8WR72slZ9XE2T3wbBBq31dm7ZBatmKLLxrB+XAqafxfRFjv08RZmj/W/ZqaM13AuA==
@@ -829,7 +842,7 @@ binary-extensions@^2.0.0:
 
 binary@^0.3.0, binary@~0.3.0:
   version "0.3.0"
-  resolved "https://registry.npmmirror.com/binary/-/binary-0.3.0.tgz"
+  resolved "https://registry.yarnpkg.com/binary/-/binary-0.3.0.tgz#9f60553bc5ce8c3386f3b553cff47462adecaa79"
   integrity sha512-D4H1y5KYwpJgK8wk1Cue5LLPgmwHKYSChkbspQg5JtVuR5ulGckxfR62H3AE9UDkdMC8yyXlqYihuz3Aqg2XZg==
   dependencies:
     buffers "~0.1.1"
@@ -2011,6 +2024,11 @@ ip-regex@^5.0.0:
   resolved "https://registry.npmmirror.com/ip-regex/-/ip-regex-5.0.0.tgz"
   integrity sha512-fOCG6lhoKKakwv+C6KdsOnGvgXnmgfmp0myi3bcNwj3qfwPAxRKWEuFhvEFF7ceYIz6+1jRZ+yguLFAmUNPEfw==
 
+ip@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ip/-/ip-2.0.0.tgz#4cf4ab182fee2314c75ede1276f8c80b479936da"
+  integrity sha512-WKa+XuLG1A1R0UWhl2+1XQSi+fZWMsYKffMZTTYsiZaUD8k2yDAj5atimTUD2TZkyCkNEeYE5NhFZmupOGtjYQ==
+
 ipfs-core-types@^0.12.1:
   version "0.12.1"
   resolved "https://registry.npmmirror.com/ipfs-core-types/-/ipfs-core-types-0.12.1.tgz"
@@ -2630,7 +2648,7 @@ mkdirp-classic@^0.5.2:
 
 "mkdirp@>=0.5 0", mkdirp@^0.5.1:
   version "0.5.6"
-  resolved "https://registry.npmmirror.com/mkdirp/-/mkdirp-0.5.6.tgz"
+  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.6.tgz#7def03d2432dcae4ba1d611445c48396062255f6"
   integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
   dependencies:
     minimist "^1.2.6"
@@ -2673,7 +2691,7 @@ ms@2.1.3, ms@^2.1.1:
   resolved "https://registry.npmmirror.com/ms/-/ms-2.1.3.tgz"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-multiformats@^9.4.2, multiformats@^9.4.5, multiformats@^9.5.1, multiformats@^9.5.4, multiformats@^9.6.3, multiformats@^9.6.4:
+multiformats@^9.4.2, multiformats@^9.4.5, multiformats@^9.5.1, multiformats@^9.5.4, multiformats@^9.6.3, multiformats@^9.6.4, multiformats@^9.9.0:
   version "9.9.0"
   resolved "https://registry.npmmirror.com/multiformats/-/multiformats-9.9.0.tgz"
   integrity sha512-HoMUjhH9T8DDBNT+6xzkrd9ga/XiBI4xLr58LJACwK6G3HTOPeMz4nB4KJs33L2BelrIJa7P0VuNaVF3hMYfjg==
@@ -3637,6 +3655,11 @@ type-fest@^0.8.0, type-fest@^0.8.1:
   resolved "https://registry.npmmirror.com/type-fest/-/type-fest-0.8.1.tgz"
   integrity sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==
 
+type-fest@^3.0.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/type-fest/-/type-fest-3.1.0.tgz#157b74044d9c27fd796b9c6aa46eae6658b1e9b8"
+  integrity sha512-StmrZmK3eD9mDF9Vt7UhqthrDSk66O9iYl5t5a0TSoVkHjl0XZx/xuc/BRz4urAXXGHOY5OLsE0RdJFIApSFmw==
+
 typescript@^4.6.4, typescript@^4.7.4:
   version "4.8.3"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.8.3.tgz"
@@ -3663,7 +3686,7 @@ universalify@^2.0.0:
 
 unzip-stream@^0.3.0:
   version "0.3.1"
-  resolved "https://registry.npmmirror.com/unzip-stream/-/unzip-stream-0.3.1.tgz"
+  resolved "https://registry.yarnpkg.com/unzip-stream/-/unzip-stream-0.3.1.tgz#2333b5cd035d29db86fb701ca212cf8517400083"
   integrity sha512-RzaGXLNt+CW+T41h1zl6pGz3EaeVhYlK+rdAap+7DxW5kqsqePO8kRtWPaCiVqdhZc86EctSPVYNix30YOMzmw==
   dependencies:
     binary "^0.3.0"
