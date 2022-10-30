@@ -36,16 +36,16 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const nodeInfo = await getNodeInfos(ipfsApis)
   const { files, pinnedCids } = await getViewFileInitData(ipfsApis)
-  const viewContents = await getPeersInfo(ipfsApis, gateway)
+  const viewContents = await getPeersInfo(ipfsApis, gateway, 20)
 
   new ViewStdout(context, daemonLogger)
   new ViewNodeInfo(context, nodeInfo)
-  new ViewPeersInfo(context, viewContents, ipfsApis)
+  const viewPeersInfo = new ViewPeersInfo(context, viewContents, ipfsApis, gateway)
   const viewFiles = new ViewFiles(context, files, pinnedCids, ipfsApis)
 
   context.subscriptions.push(
     helloWorld,
-    loadMorePeersInfo,
+    loadMorePeersInfo(viewPeersInfo),
     uploadFile(viewFiles, ipfsApis),
     shareLink,
     copyCid,

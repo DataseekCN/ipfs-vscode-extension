@@ -7,6 +7,7 @@ import * as vscode from 'vscode'
 import { IIpfsApis, IpfsApis } from './client/ipfsApis'
 import { getWebviewContent } from './methods'
 import { ViewFiles } from './viewFiles'
+import { ViewPeersInfo } from './viewPeersInfo'
 
 export const helloWorld = vscode.commands.registerCommand('ipfs-vscode-extension.helloWorld', () => {
   vscode.window.showInformationMessage('Hello World!!!!')
@@ -104,6 +105,8 @@ export const unsetPinning = (viewFiles: ViewFiles, ipfsApis: IIpfsApis) =>
     vscode.window.showInformationMessage(`Unset pinning successfully! CID is : ${cid}`)
   })
 
-export const loadMorePeersInfo = vscode.commands.registerCommand('ipfs-vscode-extension.loadMore', async () => {
-  vscode.window.showInformationMessage('Will load more peers info')
-})
+export const loadMorePeersInfo = (viewPeersInfo: ViewPeersInfo) =>
+  vscode.commands.registerCommand('ipfs-vscode-extension.loadMore', async () => {
+    viewPeersInfo.refresh()
+    vscode.window.showInformationMessage('Load more peers info successfully!')
+  })

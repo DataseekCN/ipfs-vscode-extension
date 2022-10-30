@@ -1,6 +1,7 @@
 import * as vscode from 'vscode'
 import { TreeItem } from 'vscode'
 import { IIpfsApis } from './client/ipfsApis'
+import { getPeersInfo } from './methods'
 import { ViewContent } from './types/viewPeersInfo'
 
 export class ViewPeersInfo implements vscode.TreeDataProvider<ViewContent> {
@@ -13,8 +14,11 @@ export class ViewPeersInfo implements vscode.TreeDataProvider<ViewContent> {
 
   private ipfsApis: IIpfsApis
   private viewContents: ViewContent[]
+  private gateway: string
+  private queryNumber: number
+  private batchNumber: number
 
-  constructor(context: vscode.ExtensionContext, viewContents: ViewContent[], ipfsApis: IIpfsApis) {
+  constructor(context: vscode.ExtensionContext, viewContents: ViewContent[], ipfsApis: IIpfsApis, gateway: string) {
     const view = vscode.window.createTreeView('ipfs-peers', {
       treeDataProvider: this,
       showCollapseAll: true,
@@ -24,10 +28,9 @@ export class ViewPeersInfo implements vscode.TreeDataProvider<ViewContent> {
     context.subscriptions.push(view)
     this.ipfsApis = ipfsApis
     this.viewContents = viewContents
-  }
-
-  public refresh(): any {
-    this._onDidChangeTreeData.fire(undefined)
+    this.gateway = gateway
+    this.queryNumber = 20
+    this.batchNumber = 20
   }
 
   getTreeItem(element: ViewContent): vscode.TreeItem | Thenable<vscode.TreeItem> {
@@ -44,5 +47,15 @@ export class ViewPeersInfo implements vscode.TreeDataProvider<ViewContent> {
     }
     const children = element.children
     return children ? children : []
+  }
+
+  public async refresh(): Promise<any> {
+    await this._reloadPeersInfo()
+    this._onDidChangeTreeData.fire(undefined)
+  }
+
+  private async _reloadPeersInfo(): Promise<void> {
+    this.queryNumber = this.queryNumber + this.batchNumber
+    this.viewContents = await getPeersInfo(this.ipfsApis, this.gateway, this.queryNumber)
   }
 }

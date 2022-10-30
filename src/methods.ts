@@ -74,9 +74,13 @@ export const getNodeInfos = async (ipfsApis: IIpfsApis): Promise<NodeInfos> => {
   }
 }
 
-export const getPeersInfo = async (ipfsApis: IIpfsApis, ipfsGateway: string): Promise<ViewContent[]> => {
-  const peersInfo = await ipfsApis.getPeersInfo()
-
+export const getPeersInfo = async (
+  ipfsApis: IIpfsApis,
+  ipfsGateway: string,
+  loadNumber: number
+): Promise<ViewContent[]> => {
+  const peersInfoAll = await ipfsApis.getPeersInfo()
+  const peersInfo = peersInfoAll.slice(0, loadNumber)
   return await Promise.all(
     peersInfo.map(async (peerInfo) => {
       const ip = peerInfo.Addr.split('/')[2]
@@ -87,7 +91,9 @@ export const getPeersInfo = async (ipfsApis: IIpfsApis, ipfsGateway: string): Pr
         city: 'Unknown'
       }))
       const emoj =
-        ipInfo.status === 'success' ? countryCodeEmoji(ipInfo.countryCode == 'TW' ? 'CN' : ipInfo.countryCode) : '🌏'
+        ipInfo.status === 'success' && ipInfo.countryCode.length === 2
+          ? countryCodeEmoji(ipInfo.countryCode == 'TW' ? 'CN' : ipInfo.countryCode)
+          : '🌏'
       const children: ViewContent[] = [
         { content: `Location: ${ipInfo.country || 'Unknown'}, ${ipInfo.city || 'Unknown'}`, isFather: false },
         { content: `Latency: ${peerInfo.Latency}`, isFather: false },
