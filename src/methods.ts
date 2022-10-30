@@ -91,9 +91,7 @@ export const getPeersInfo = async (
         city: 'Unknown'
       }))
       const emoj =
-        ipInfo.status === 'success' && ipInfo.countryCode.length === 2
-          ? countryCodeEmoji(ipInfo.countryCode == 'TW' ? 'CN' : ipInfo.countryCode)
-          : '🌏'
+        ipInfo.status === 'success' && ipInfo.countryCode.length === 2 ? countryCodeEmoji(ipInfo.countryCode) : '🌏'
       const children: ViewContent[] = [
         { content: `Location: ${ipInfo.country || 'Unknown'}, ${ipInfo.city || 'Unknown'}`, isFather: false },
         { content: `Latency: ${peerInfo.Latency}`, isFather: false },
