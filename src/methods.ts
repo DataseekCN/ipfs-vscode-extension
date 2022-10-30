@@ -75,8 +75,7 @@ export const getNodeInfos = async (ipfsApis: IIpfsApis): Promise<NodeInfos> => {
 }
 
 export const getPeersInfo = async (ipfsApis: IIpfsApis, ipfsGateway: string): Promise<ViewContent[]> => {
-  const peersInfoAll = await ipfsApis.getPeersInfo()
-  const peersInfo = peersInfoAll.slice(0, 99)
+  const peersInfo = await ipfsApis.getPeersInfo()
 
   return await Promise.all(
     peersInfo.map(async (peerInfo) => {
