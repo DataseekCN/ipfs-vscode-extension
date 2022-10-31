@@ -1,6 +1,6 @@
-# ipfs-vscode-extension README
+# ipfs-vscode-extension
 
-This is the README for your extension "ipfs-vscode-extension". After writing up a brief description, we recommend including the following sections.
+IPFS client as a vscode plugin.
 
 ## Features
 
