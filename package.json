@@ -24,14 +24,14 @@
         {
           "id": "ipfs-activitybar",
           "title": "IPFS",
-          "icon": "src/assets/ipfs.svg"
+          "icon": "assets/ipfs.svg"
         }
       ],
       "panel": [
         {
           "id": "ipfs-panel",
           "title": "IPFS",
-          "icon": "src/assets/ipfs.svg"
+          "icon": "assets/ipfs.svg"
         }
       ]
     },

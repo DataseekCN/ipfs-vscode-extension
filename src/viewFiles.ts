@@ -38,8 +38,8 @@ export class ViewFiles implements vscode.TreeDataProvider<IpfsFile> {
     view.contextValue = element.Hash
     if (this.pinnedCids.includes(element.Hash)) {
       view.iconPath = {
-        light: this.context.asAbsolutePath(path.join('src', 'assets', 'light', 'pin.svg')),
-        dark: this.context.asAbsolutePath(path.join('src', 'assets', 'dark', 'pin.svg'))
+        light: this.context.asAbsolutePath(path.join('assets', 'light', 'pin.svg')),
+        dark: this.context.asAbsolutePath(path.join('assets', 'dark', 'pin.svg'))
       }
     }
     return view
