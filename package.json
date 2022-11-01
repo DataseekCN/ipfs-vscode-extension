@@ -131,20 +131,19 @@
     ]
   },
   "scripts": {
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "yarn run compile && yarn run lint",
+    "prepare": "husky install",
     "lint": "eslint src --ext ts",
     "lint:fix": "yarn lint --fix",
-    "test": "node ./out/test/runTest.js",
-    "prepare": "husky install",
-    "type-check": "tsc -p . --noEmit",
     "pre-commit-check": "lint-staged && yarn type-check",
-    "vscode:prepublish": "npm run esbuild-base -- --minify",
-    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
-    "esbuild": "npm run esbuild-base -- --sourcemap",
-    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
-    "test-compile": "npm run compile"
+    "type-check": "yarn compile --noEmit",
+    "compile": "tsc -p .",
+    "watch": "yarn esbuild --watch",
+    "pretest": "yarn compile && yarn lint",
+    "test": "node ./out/test/runTest.js",
+    "esbuild-base": "rimraf out && node esbuild.config.js",
+    "esbuild": "yarn esbuild-base --sourcemap",
+    "package": "npx vsce package",
+    "vscode:prepublish": "yarn esbuild-base --minify"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
@@ -156,7 +155,9 @@
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
     "@vscode/test-electron": "^2.1.5",
+    "chokidar": "^3.5.3",
     "commitlint-plugin-function-rules": "^1.7.1",
+    "console-stamp": "^3.0.6",
     "esbuild": "^0.15.12",
     "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.5.0",
@@ -165,6 +166,7 @@
     "lint-staged": "^13.0.3",
     "mocha": "^10.0.0",
     "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
     "typescript": "^4.7.4"
   },
   "dependencies": {

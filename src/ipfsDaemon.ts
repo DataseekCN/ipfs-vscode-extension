@@ -56,7 +56,7 @@ export const initializeDaemon = async (binPath: string) => {
 
   if (await isDaemonAlreadyExists(api)) {
     console.log(`Daemon already exists on ${api}, using the existing one.`)
-    return { daemonLogger: undefined, api, gateway }
+    return { daemonLogger: new DaemonLogger(), api, gateway }
   }
 
   console.log('Initializing daemon...')
