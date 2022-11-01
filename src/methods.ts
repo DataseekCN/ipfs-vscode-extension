@@ -1,31 +1,25 @@
 import countryCodeEmoji from 'country-code-emoji'
-import * as nodeFs from 'fs'
+import fs from 'fs'
 import got from 'got'
-import * as vscode from 'vscode'
-import { Uri } from 'vscode'
+import path from 'path'
+import vscode, { Uri } from 'vscode'
 import { IIpfsApis } from './client/ipfsApis'
 import { getDownloadURL, unpack } from './download/newDownload'
 import { lookup } from './lib/geoip'
 import { IpInfo } from './types/ipApis'
 import { NodeInfos, ViewFileInitData } from './types/methods'
 import { ViewContent } from './types/viewPeersInfo'
-import nodePath = require('node:path')
 
 export const downloadIpfsDaemon = async (globalStorageUri: Uri): Promise<string> => {
-  const fs = vscode.workspace.fs
-  const Uri = vscode.Uri
-
-  // const bin = vscode.Uri.joinPath(globalStorageUri, 'ipfs/bin/go-ipfs')
-
-  const exist = nodeFs.existsSync(globalStorageUri.path)
+  const exist = fs.existsSync(globalStorageUri.path)
 
   if (!exist) {
-    fs.createDirectory(globalStorageUri)
+    vscode.workspace.fs.createDirectory(globalStorageUri)
   }
 
   const downloadUri = Uri.joinPath(globalStorageUri, '/download')
-  if (!nodeFs.existsSync(downloadUri.path)) {
-    await fs.createDirectory(downloadUri)
+  if (!fs.existsSync(downloadUri.path)) {
+    await vscode.workspace.fs.createDirectory(downloadUri)
   }
 
   console.log(downloadUri.path)
@@ -33,9 +27,9 @@ export const downloadIpfsDaemon = async (globalStorageUri: Uri): Promise<string>
   const filename = url.split('/').pop()
   const filePath = `${downloadUri.path}/${filename}`
 
-  if (!nodeFs.existsSync(filePath)) {
+  if (!fs.existsSync(filePath)) {
     // 这一步会很长 到时可以加个进度条
-    nodeFs.writeFileSync(filePath, await got(url).buffer())
+    fs.writeFileSync(filePath, await got(url).buffer())
     // const goIpfs = await got(url)
     // await fs.writeFile(Uri.joinPath(globalStorageUri, '/bin/kubo'), goIpfs)
     console.log(url)
@@ -43,8 +37,8 @@ export const downloadIpfsDaemon = async (globalStorageUri: Uri): Promise<string>
 
   const binUri = Uri.joinPath(globalStorageUri, '/bin')
   const binName = 'ipfs'
-  const binPath = nodePath.join(binUri.path, binName)
-  if (!nodeFs.existsSync(binPath)) {
+  const binPath = path.join(binUri.path, binName)
+  if (!fs.existsSync(binPath)) {
     await unpack(filePath, binPath)
   }
   return binPath

@@ -1,6 +1,5 @@
-import * as path from 'path'
-import * as vscode from 'vscode'
-import { TreeItem } from 'vscode'
+import path from 'path'
+import vscode, { TreeItem } from 'vscode'
 import { IIpfsApis } from './client/ipfsApis'
 import { getViewFileInitData } from './methods'
 

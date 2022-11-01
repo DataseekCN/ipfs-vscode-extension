@@ -1,4 +1,4 @@
-import * as vscode from 'vscode'
+import vscode from 'vscode'
 import { DaemonLogger } from './daemonLogger'
 
 export class ViewStdout implements vscode.WebviewViewProvider {

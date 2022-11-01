@@ -2,7 +2,7 @@ import { execFile } from 'child_process'
 import { promises as fs } from 'fs'
 import got from 'got'
 import { homedir } from 'os'
-import * as path from 'path/posix'
+import path from 'path/posix'
 import { DaemonLogger } from './daemonLogger'
 
 const CONFIG_PATH = path.join(homedir(), '.ipfs', 'config')

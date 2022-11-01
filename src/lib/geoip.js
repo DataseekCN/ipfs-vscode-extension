@@ -1,7 +1,7 @@
 import memoize from '@common.js/p-memoize'
 import { decode as dagCborDecode } from '@ipld/dag-cbor'
 import got from 'got'
-import * as ip from 'ip'
+import ip from 'ip'
 import { CID } from 'multiformats/cid'
 
 const MAX_LOOKUP_RETRIES = 3

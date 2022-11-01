@@ -1,5 +1,4 @@
-import * as vscode from 'vscode'
-import { TreeItem } from 'vscode'
+import vscode, { TreeItem } from 'vscode'
 import { IIpfsApis } from './client/ipfsApis'
 import { getPeersInfo } from './methods'
 import { ViewContent } from './types/viewPeersInfo'

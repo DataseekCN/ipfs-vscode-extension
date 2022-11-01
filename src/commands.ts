@@ -1,9 +1,8 @@
-import * as FormData from 'form-data'
-import { AppendOptions } from 'form-data'
-import * as nodeFs from 'fs'
+import FormData, { AppendOptions } from 'form-data'
+import fs from 'fs'
 import { glob } from 'glob'
-import * as nodePath from 'path'
-import * as vscode from 'vscode'
+import path from 'path'
+import vscode from 'vscode'
 import { IIpfsApis, IpfsApis } from './client/ipfsApis'
 import { getWebviewContent } from './methods'
 import { ViewFiles } from './viewFiles'
@@ -22,22 +21,22 @@ export const uploadFile = (viewFiles: ViewFiles, ipfsApis: IpfsApis) => {
     }
     vscode.window.showOpenDialog(options).then(async (fileUri) => {
       if (fileUri && fileUri[0]) {
-        const stat = nodeFs.statSync(fileUri[0].fsPath)
+        const stat = fs.statSync(fileUri[0].fsPath)
         if (stat.isDirectory()) {
           const formData = new FormData()
           const filenames = glob.sync('**/**', { cwd: fileUri[0].fsPath })
-          const dirName = nodePath.basename(fileUri[0].fsPath)
+          const dirName = path.basename(fileUri[0].fsPath)
           console.log(dirName)
           if (filenames.length > 0) {
             for (const filename of filenames) {
               const filePath = `${fileUri[0].fsPath}/${filename}`
               const filenameIPFS = toQueryString(`${dirName}/${filename}`)
-              if (nodeFs.statSync(filePath).isFile()) {
+              if (fs.statSync(filePath).isFile()) {
                 const options: AppendOptions = {
                   filename: filenameIPFS
                 }
                 console.log(filenameIPFS)
-                formData.append(filenameIPFS, nodeFs.readFileSync(filePath), options)
+                formData.append(filenameIPFS, fs.readFileSync(filePath), options)
               }
             }
             await ipfsApis.upload({ formData, baseDir: dirName, isDir: true })
@@ -45,11 +44,11 @@ export const uploadFile = (viewFiles: ViewFiles, ipfsApis: IpfsApis) => {
           }
         } else if (stat.isFile()) {
           const formData = new FormData()
-          const filename = nodePath.basename(fileUri[0].fsPath)
+          const filename = path.basename(fileUri[0].fsPath)
           const options: AppendOptions = {
             filename
           }
-          formData.append(filename, nodeFs.readFileSync(fileUri[0].fsPath), options)
+          formData.append(filename, fs.readFileSync(fileUri[0].fsPath), options)
           console.log(filename)
           await ipfsApis.upload({ formData: formData })
           console.log(`${filename}文件上传成功`)

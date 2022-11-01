@@ -1,7 +1,5 @@
-import { AxiosRequestConfig } from 'axios'
+import axios, { AxiosRequestConfig } from 'axios'
 import { IHttpClientRequestParameters } from '../types/client'
-
-const axios = require('axios')
 
 export interface IHttpClient {
   post<T>(parameters: IHttpClientRequestParameters): Promise<T>

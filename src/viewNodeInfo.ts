@@ -1,5 +1,4 @@
-import * as vscode from 'vscode'
-import { TreeItem } from 'vscode'
+import vscode, { TreeItem } from 'vscode'
 
 export class ViewNodeInfo implements vscode.TreeDataProvider<TreeItem> {
   dropMimeTypes = ['application/vnd.code.tree.ViewNodeInfo']
