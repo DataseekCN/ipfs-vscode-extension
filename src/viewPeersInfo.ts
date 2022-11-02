@@ -51,6 +51,7 @@ export class ViewPeersInfo implements vscode.TreeDataProvider<ViewContent> {
   public async refresh(): Promise<any> {
     await this._reloadPeersInfo()
     this._onDidChangeTreeData.fire(undefined)
+    vscode.window.showInformationMessage('Load more peers info successfully!')
   }
 
   private async _reloadPeersInfo(): Promise<void> {
