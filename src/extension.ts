@@ -11,7 +11,13 @@ import {
   uploadFile
 } from './commands'
 import { initializeDaemon } from './ipfsDaemon'
-import { downloadIpfsDaemon, getNodeInfos, getPeersInfo, getViewFileInitData } from './methods'
+import {
+  downloadIpfsDaemon,
+  getNodeInfos,
+  getPeersInfo,
+  getViewFileInitData,
+  periodicRefreshPeersInfo
+} from './methods'
 import { ViewFiles } from './viewFiles'
 import { ViewNodeInfo } from './viewNodeInfo'
 import { ViewPeersInfo } from './viewPeersInfo'
@@ -34,12 +40,16 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const nodeInfo = await getNodeInfos(ipfsApis)
   const { files, pinnedCids } = await getViewFileInitData(ipfsApis)
-  const viewContents = await getPeersInfo(ipfsApis, gateway, 20)
+  const peersInfoAll = await ipfsApis.getPeersInfo()
+  const viewContents = await getPeersInfo(ipfsApis, gateway, peersInfoAll, 20)
+  nodeInfo['Peer Number'] = peersInfoAll.length
 
   new ViewStdout(context, daemonLogger)
-  new ViewNodeInfo(context, nodeInfo)
+  const viewNodeInfo = new ViewNodeInfo(context, nodeInfo)
   const viewPeersInfo = new ViewPeersInfo(context, viewContents, ipfsApis, gateway)
   const viewFiles = new ViewFiles(context, files, pinnedCids, ipfsApis)
+
+  periodicRefreshPeersInfo(ipfsApis, viewNodeInfo, viewPeersInfo)
 
   context.subscriptions.push(
     helloWorld,

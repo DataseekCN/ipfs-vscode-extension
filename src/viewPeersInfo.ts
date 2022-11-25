@@ -48,14 +48,25 @@ export class ViewPeersInfo implements vscode.TreeDataProvider<ViewContent> {
     return children ? children : []
   }
 
-  public async refresh(): Promise<any> {
-    await this._reloadPeersInfo()
+  public async refresh(peersInfoAll: PeerInfo[]): Promise<any> {
+    await this._reloadPeersInfo(peersInfoAll)
+    this._onDidChangeTreeData.fire(undefined)
+    console.log('auto refresh success')
+  }
+
+  private async _reloadPeersInfo(peersInfoAll: PeerInfo[]): Promise<void> {
+    this.viewContents = await getPeersInfo(this.ipfsApis, this.gateway, peersInfoAll, this.queryNumber)
+  }
+
+  public async refreshLoadMore(): Promise<any> {
+    await this._reloadPeersInfoWithQueryNumber()
     this._onDidChangeTreeData.fire(undefined)
     vscode.window.showInformationMessage('Load more peers info successfully!')
   }
 
-  private async _reloadPeersInfo(): Promise<void> {
+  private async _reloadPeersInfoWithQueryNumber(): Promise<void> {
+    const peersInfoAll = await this.ipfsApis.getPeersInfo()
     this.queryNumber = this.queryNumber + this.batchNumber
-    this.viewContents = await getPeersInfo(this.ipfsApis, this.gateway, this.queryNumber)
+    this.viewContents = await getPeersInfo(this.ipfsApis, this.gateway, peersInfoAll, this.queryNumber)
   }
 }

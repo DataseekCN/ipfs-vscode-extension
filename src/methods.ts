@@ -2,6 +2,7 @@ import countryCodeEmoji from 'country-code-emoji'
 import fs from 'fs'
 import got from 'got'
 import path from 'path'
+import Timer from 'setinterval'
 import vscode, { Uri } from 'vscode'
 import { IIpfsApis } from './client/ipfsApis'
 import { getDownloadURL, unpack } from './lib/download/newDownload'
@@ -9,6 +10,8 @@ import { lookup } from './lib/geoip'
 import { IpInfo } from './types/ipApis'
 import { NodeInfos, ViewFileInitData } from './types/methods'
 import { ViewContent } from './types/viewPeersInfo'
+import { ViewNodeInfo } from './viewNodeInfo'
+import { ViewPeersInfo } from './viewPeersInfo'
 
 export const downloadIpfsDaemon = async (globalStorageUri: Uri): Promise<string> => {
   const exist = fs.existsSync(globalStorageUri.path)
@@ -71,9 +74,9 @@ export const getNodeInfos = async (ipfsApis: IIpfsApis): Promise<NodeInfos> => {
 export const getPeersInfo = async (
   ipfsApis: IIpfsApis,
   ipfsGateway: string,
+  peersInfoAll: PeerInfo[],
   loadNumber: number
 ): Promise<ViewContent[]> => {
-  const peersInfoAll = await ipfsApis.getPeersInfo()
   const peersInfo = peersInfoAll.slice(0, loadNumber)
   return await Promise.all(
     peersInfo.map(async (peerInfo) => {
@@ -115,4 +118,22 @@ export const getWebviewContent = (link: String) => {
     </body>
     </html>
   `
+}
+
+export const periodicRefreshPeersInfo = (
+  ipfsApis: IIpfsApis,
+  viewNodeInfo: ViewNodeInfo,
+  viewPeersInfo: ViewPeersInfo
+) => {
+  const timer = new Timer(async () => {
+    const peersInfoAll = await ipfsApis.getPeersInfo()
+    await viewPeersInfo.refresh(peersInfoAll)
+    viewNodeInfo.refresh(peersInfoAll.length)
+  }, 5000)
+  // start timer
+  timer.setInterval()
+}
+
+export const handleTimeString = (timeString: string): number => {
+  return timeString.endsWith('ms') ? parseFloat(timeString) : parseFloat(timeString) * 1000
 }

@@ -106,5 +106,5 @@ export const unsetPinning = (viewFiles: ViewFiles, ipfsApis: IIpfsApis) =>
 
 export const loadMorePeersInfo = (viewPeersInfo: ViewPeersInfo) =>
   vscode.commands.registerCommand('ipfs-vscode-extension.loadMore', async () => {
-    viewPeersInfo.refresh()
+    viewPeersInfo.refreshLoadMore()
   })

@@ -9,4 +9,5 @@ export type NodeInfos = {
   API: string
   GateWay: string
   'Public Key': string
+  'Peer Number'?: number
 }

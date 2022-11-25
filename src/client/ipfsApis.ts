@@ -1,4 +1,5 @@
 import FormData from 'form-data'
+import { handleTimeString } from '../methods'
 import { IHttpClientRequestParameters } from '../types/client'
 import { HttpClient, IHttpClient } from './client'
 
@@ -46,9 +47,9 @@ export class IpfsApis implements IIpfsApis {
   async getPeersInfo(): Promise<PeerInfo[]> {
     const queryPath = '/swarm/peers?verbose=true&timeout=10000ms'
     try {
-      return await (
-        await this.httpClient.post<PeersInfo>({ queryPath })
-      ).Peers
+      return (await this.httpClient.post<PeersInfo>({ queryPath })).Peers.sort(
+        (a, b) => handleTimeString(a.Latency) - handleTimeString(b.Latency)
+      )
     } catch (e) {
       console.log(e)
       throw new Error('Failed to get peers info.')

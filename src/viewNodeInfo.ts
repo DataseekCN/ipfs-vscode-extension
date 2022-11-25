@@ -31,4 +31,9 @@ export class ViewNodeInfo implements vscode.TreeDataProvider<TreeItem> {
     )
     return viewInfo
   }
+
+  public refresh(peersNumber: number): void {
+    this.nodeInfo['Peer Number'] = peersNumber
+    this._onDidChangeTreeData.fire(undefined)
+  }
 }
