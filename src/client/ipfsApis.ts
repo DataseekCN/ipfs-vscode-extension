@@ -13,6 +13,7 @@ export interface IIpfsApis {
   setPinning(cid: string): Promise<void>
   unsetPinng(cid: string): Promise<void>
   upload(parameters: { formData: FormData; baseDir?: string; isDir?: boolean }): Promise<UploadResponse>
+  shutDown(): Promise<void>
 }
 
 export class IpfsApis implements IIpfsApis {
@@ -105,6 +106,11 @@ export class IpfsApis implements IIpfsApis {
       console.log(e)
       throw new Error('Failed to get nodeId info.')
     }
+  }
+
+  async shutDown(): Promise<void> {
+    const queryPath = '/shutdown'
+    await this.httpClient.post({ queryPath })
   }
 
   async upload(parameters: { formData: FormData; baseDir?: string; isDir?: boolean }): Promise<UploadResponse> {

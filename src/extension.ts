@@ -8,9 +8,12 @@ import {
   openWebUi,
   setPinning,
   shareLink,
+  startDaemon,
+  stopDaemon,
   unsetPinning,
   uploadFile
 } from './commands'
+import { DAEMONE_ON } from './constants'
 import { initializeDaemon } from './ipfsDaemon'
 import {
   downloadIpfsDaemon,
@@ -36,6 +39,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const binPath = await downloadIpfsDaemon(context.globalStorageUri)
   const { daemonLogger, api, gateway } = await initializeDaemon(binPath)
+  vscode.commands.executeCommand('setContext', 'daemonStatus', DAEMONE_ON)
 
   const ipfsApis = new IpfsApis(api)
 
@@ -61,6 +65,8 @@ export async function activate(context: vscode.ExtensionContext) {
     setPinning(viewFiles, ipfsApis),
     unsetPinning(viewFiles, ipfsApis),
     openInWebView(nodeInfo.GateWay),
-    openWebUi(nodeInfo.API)
+    openWebUi(nodeInfo.API),
+    stopDaemon(ipfsApis),
+    startDaemon(binPath, ipfsApis, viewNodeInfo, viewPeersInfo)
   )
 }

@@ -1,8 +1,10 @@
+import vscode from 'vscode'
 import { execFile } from 'child_process'
 import { promises as fs } from 'fs'
 import got from 'got'
 import { homedir } from 'os'
 import path from 'path/posix'
+import { DAEMONE_ON } from './constants'
 import { DaemonLogger } from './daemonLogger'
 
 const CONFIG_PATH = path.join(homedir(), '.ipfs', 'config')
@@ -65,6 +67,5 @@ export const initializeDaemon = async (binPath: string) => {
   const daemonLogger = new DaemonLogger(daemon)
 
   await waitDaemon(api)
-
   return { daemonLogger, api, gateway }
 }

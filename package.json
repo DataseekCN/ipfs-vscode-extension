@@ -76,6 +76,16 @@
           "group": "navigation"
         },
         {
+          "command": "ipfs-vscode-extension.startDaemon",
+          "when": "view == ipfs-node-info && daemonStatus == daemonOff",
+          "group": "navigation"
+        },
+        {
+          "command": "ipfs-vscode-extension.stopDaemon",
+          "when": "view == ipfs-node-info && daemonStatus == daemonOn",
+          "group": "navigation"
+        },
+        {
           "command": "ipfs-vscode-extension.loadMore",
           "when": "view == ipfs-peers",
           "group": "navigation"
@@ -136,6 +146,14 @@
       {
         "command": "ipfs-vscode-extension.unsetPinning",
         "title": "Unset Pinning"
+      },
+      {
+        "command": "ipfs-vscode-extension.startDaemon",
+        "title": "Start"
+      },
+      {
+        "command": "ipfs-vscode-extension.stopDaemon",
+        "title": "Stop"
       }
     ]
   },

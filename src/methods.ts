@@ -5,6 +5,8 @@ import path from 'path'
 import Timer from 'setinterval'
 import vscode, { Uri } from 'vscode'
 import { IIpfsApis } from './client/ipfsApis'
+import { DAEMONE_OFF, DAEMONE_ON } from './constants'
+import { initializeDaemon } from './ipfsDaemon'
 import { getDownloadURL, unpack } from './lib/download/newDownload'
 import { lookup } from './lib/geoip'
 import { IpInfo } from './types/ipApis'
@@ -139,4 +141,22 @@ export const handleTimeString = (timeString: string): number => {
     return 9999999
   }
   return timeString.endsWith('ms') ? parseFloat(timeString) : parseFloat(timeString) * 1000
+}
+
+export const shutDownDaemon = async (ipfsApis: IIpfsApis) => {
+  await ipfsApis.shutDown()
+  vscode.window.showInformationMessage('Daemon stop successfully.')
+  vscode.commands.executeCommand('setContext', 'daemonStatus', DAEMONE_OFF)
+}
+
+export const setUpDaemon = async (
+  binPath: string,
+  ipfsApis: IIpfsApis,
+  viewNodeInfo: ViewNodeInfo,
+  viewPeersInfo: ViewPeersInfo
+) => {
+  await initializeDaemon(binPath)
+  periodicRefreshPeersInfo(ipfsApis, viewNodeInfo, viewPeersInfo)
+  vscode.commands.executeCommand('setContext', 'daemonStatus', DAEMONE_ON)
+  vscode.window.showInformationMessage('Daemon start successfully.')
 }

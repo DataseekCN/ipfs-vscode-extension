@@ -4,8 +4,9 @@ import { glob } from 'glob'
 import path from 'path'
 import vscode from 'vscode'
 import { IIpfsApis, IpfsApis } from './client/ipfsApis'
-import { getWebviewContent } from './methods'
+import { getWebviewContent, setUpDaemon, shutDownDaemon } from './methods'
 import { ViewFiles } from './viewFiles'
+import { ViewNodeInfo } from './viewNodeInfo'
 import { ViewPeersInfo } from './viewPeersInfo'
 
 export const helloWorld = vscode.commands.registerCommand('ipfs-vscode-extension.helloWorld', () => {
@@ -121,3 +122,16 @@ export const openWebUi = (apiPath: string) =>
     })
     panel.webview.html = getWebviewContent(webUiLink)
   })
+
+export const stopDaemon = (ipfsApis: IIpfsApis) =>
+  vscode.commands.registerCommand('ipfs-vscode-extension.stopDaemon', async () => shutDownDaemon(ipfsApis))
+
+export const startDaemon = (
+  binPath: string,
+  ipfsApis: IIpfsApis,
+  viewNodeInfo: ViewNodeInfo,
+  viewPeersInfo: ViewPeersInfo
+) =>
+  vscode.commands.registerCommand('ipfs-vscode-extension.startDaemon', async () =>
+    setUpDaemon(binPath, ipfsApis, viewNodeInfo, viewPeersInfo)
+  )
