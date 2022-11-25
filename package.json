@@ -68,17 +68,17 @@
         {
           "command": "ipfs-vscode-extension.showWebUi",
           "when": "view == ipfs-node-info",
-          "group": "navigation"
+          "group": "navigation@2"
         },
         {
           "command": "ipfs-vscode-extension.uploadFile",
           "when": "view == ipfs-node-info",
-          "group": "navigation"
+          "group": "navigation@3"
         },
         {
           "command": "ipfs-vscode-extension.startDaemon",
           "when": "view == ipfs-node-info && daemonStatus == daemonOff",
-          "group": "navigation"
+          "group": "navigation@1"
         },
         {
           "command": "ipfs-vscode-extension.stopDaemon",
