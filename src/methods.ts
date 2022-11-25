@@ -135,5 +135,8 @@ export const periodicRefreshPeersInfo = (
 }
 
 export const handleTimeString = (timeString: string): number => {
+  if (timeString === 'n/a') {
+    return 9999999
+  }
   return timeString.endsWith('ms') ? parseFloat(timeString) : parseFloat(timeString) * 1000
 }
