@@ -5,6 +5,7 @@ import {
   helloWorld,
   loadMorePeersInfo,
   openInWebView,
+  openWebUi,
   setPinning,
   shareLink,
   unsetPinning,
@@ -59,6 +60,7 @@ export async function activate(context: vscode.ExtensionContext) {
     copyCid,
     setPinning(viewFiles, ipfsApis),
     unsetPinning(viewFiles, ipfsApis),
-    openInWebView(nodeInfo.GateWay)
+    openInWebView(nodeInfo.GateWay),
+    openWebUi(nodeInfo.API)
   )
 }
