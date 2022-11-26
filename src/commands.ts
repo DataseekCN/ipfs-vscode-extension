@@ -114,8 +114,6 @@ export const openWebUi = (apiPath: string) =>
   vscode.commands.registerCommand('ipfs-vscode-extension.showWebUi', () => {
     const apiPort = apiPath.split('/')[4]
     const webUiLink = `http://127.0.0.1:${apiPort}/webui`
-    console.log(webUiLink)
-    console.log(apiPort)
     const panel = vscode.window.createWebviewPanel('Webview', 'IPFS Web UI', vscode.ViewColumn.One, {
       enableScripts: true,
       retainContextWhenHidden: true
