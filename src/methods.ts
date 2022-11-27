@@ -6,6 +6,7 @@ import Timer from 'setinterval'
 import vscode, { Uri } from 'vscode'
 import { IIpfsApis } from './client/ipfsApis'
 import { DAEMONE_OFF, DAEMONE_ON, DAEMON_STATUS } from './constants'
+import { decorate } from './decorator'
 import { initializeDaemon } from './ipfsDaemon'
 import { getDownloadURL, unpack } from './lib/download/newDownload'
 import { lookup } from './lib/geoip'
@@ -143,13 +144,19 @@ export const handleTimeString = (timeString: string): number => {
   return timeString.endsWith('ms') ? parseFloat(timeString) : parseFloat(timeString) * 1000
 }
 
-export const shutDownDaemon = async (ipfsApis: IIpfsApis) => {
+export const setDaemonStatus = (context: vscode.ExtensionContext, status: string) => {
+  vscode.commands.executeCommand('setContext', DAEMON_STATUS, status)
+  context.globalState.update(DAEMON_STATUS, status)
+}
+
+export const shutDownDaemon = async (context: vscode.ExtensionContext, ipfsApis: IIpfsApis) => {
   await ipfsApis.shutDown()
   vscode.window.showInformationMessage('Daemon stop successfully.')
-  vscode.commands.executeCommand('setContext', DAEMON_STATUS, DAEMONE_OFF)
+  setDaemonStatus(context, DAEMONE_OFF)
 }
 
 export const setUpDaemon = async (
+  context: vscode.ExtensionContext,
   binPath: string,
   ipfsApis: IIpfsApis,
   viewNodeInfo: ViewNodeInfo,
@@ -157,6 +164,12 @@ export const setUpDaemon = async (
 ) => {
   await initializeDaemon(binPath)
   periodicRefreshPeersInfo(ipfsApis, viewNodeInfo, viewPeersInfo)
-  vscode.commands.executeCommand('setContext', DAEMON_STATUS, DAEMONE_ON)
+  setDaemonStatus(context, DAEMONE_ON)
   vscode.window.showInformationMessage('Daemon start successfully.')
+}
+
+export const setUpCidDetactor = (context: vscode.ExtensionContext) => {
+  vscode.workspace.onDidOpenTextDocument(() => decorate(context))
+  vscode.workspace.onDidChangeTextDocument(() => decorate(context))
+  vscode.window.onDidChangeVisibleTextEditors(() => decorate(context))
 }

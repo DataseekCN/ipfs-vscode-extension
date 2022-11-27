@@ -13,14 +13,16 @@ import {
   unsetPinning,
   uploadFile
 } from './commands'
-import { DAEMONE_ON, DAEMON_STATUS } from './constants'
+import { DAEMONE_ON } from './constants'
 import { initializeDaemon } from './ipfsDaemon'
 import {
   downloadIpfsDaemon,
   getNodeInfos,
   getPeersInfo,
   getViewFileInitData,
-  periodicRefreshPeersInfo
+  periodicRefreshPeersInfo,
+  setDaemonStatus,
+  setUpCidDetactor
 } from './methods'
 import { ViewFiles } from './viewFiles'
 import { ViewNodeInfo } from './viewNodeInfo'
@@ -39,7 +41,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const binPath = await downloadIpfsDaemon(context.globalStorageUri)
   const { daemonLogger, api, gateway } = await initializeDaemon(binPath)
-  vscode.commands.executeCommand('setContext', DAEMON_STATUS, DAEMONE_ON)
+  setDaemonStatus(context, DAEMONE_ON)
+  setUpCidDetactor(context)
 
   const ipfsApis = new IpfsApis(api)
 
@@ -66,7 +69,7 @@ export async function activate(context: vscode.ExtensionContext) {
     unsetPinning(viewFiles, ipfsApis),
     openInWebView(nodeInfo.GateWay),
     openWebUi(nodeInfo.API),
-    stopDaemon(ipfsApis),
-    startDaemon(binPath, ipfsApis, viewNodeInfo, viewPeersInfo)
+    stopDaemon(context, ipfsApis),
+    startDaemon(context, binPath, ipfsApis, viewNodeInfo, viewPeersInfo)
   )
 }

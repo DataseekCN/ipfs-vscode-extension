@@ -121,15 +121,16 @@ export const openWebUi = (apiPath: string) =>
     panel.webview.html = getWebviewContent(webUiLink)
   })
 
-export const stopDaemon = (ipfsApis: IIpfsApis) =>
-  vscode.commands.registerCommand('ipfs-vscode-extension.stopDaemon', async () => shutDownDaemon(ipfsApis))
+export const stopDaemon = (context: vscode.ExtensionContext, ipfsApis: IIpfsApis) =>
+  vscode.commands.registerCommand('ipfs-vscode-extension.stopDaemon', async () => shutDownDaemon(context, ipfsApis))
 
 export const startDaemon = (
+  context: vscode.ExtensionContext,
   binPath: string,
   ipfsApis: IIpfsApis,
   viewNodeInfo: ViewNodeInfo,
   viewPeersInfo: ViewPeersInfo
 ) =>
   vscode.commands.registerCommand('ipfs-vscode-extension.startDaemon', async () =>
-    setUpDaemon(binPath, ipfsApis, viewNodeInfo, viewPeersInfo)
+    setUpDaemon(context, binPath, ipfsApis, viewNodeInfo, viewPeersInfo)
   )
