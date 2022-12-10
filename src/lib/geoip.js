@@ -1,8 +1,8 @@
-import memoize from '@common.js/p-memoize'
 import { decode as dagCborDecode } from '@ipld/dag-cbor'
 import got from 'got'
 import ip from 'ip'
 import { CID } from 'multiformats/cid'
+import { default as memoize } from 'p-memoize'
 
 const MAX_LOOKUP_RETRIES = 3
 
