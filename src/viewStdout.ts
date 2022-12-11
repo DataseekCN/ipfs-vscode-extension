@@ -25,18 +25,18 @@ export class ViewStdout implements vscode.WebviewViewProvider {
   }
 
   private injectLogToWebview(webviewView: vscode.WebviewView) {
-    const writeLog = (log: string) => webviewView.webview.postMessage(log)
+    const writeDaemonLog = (log: string) => webviewView.webview.postMessage({ type: 'daemon', log })
 
-    writeLog(this.daemonLogger.logs)
-    this.daemonLogger.on('data', writeLog)
+    writeDaemonLog(this.daemonLogger.logs)
+    this.daemonLogger.on('data', writeDaemonLog)
 
     webviewView.onDidChangeVisibility(() => {
       if (webviewView.visible) {
-        writeLog(this.daemonLogger.logs)
+        writeDaemonLog(this.daemonLogger.logs)
       }
     })
 
-    webviewView.onDidDispose(() => this.daemonLogger.removeListener('data', writeLog))
+    webviewView.onDidDispose(() => this.daemonLogger.removeListener('data', writeDaemonLog))
   }
 
   private getHtmlForWebview() {
