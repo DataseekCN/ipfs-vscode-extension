@@ -2,6 +2,7 @@ import vscode, { TreeItem } from 'vscode'
 import { IIpfsApis } from './client/ipfsApis'
 import { getPeersInfo } from './methods'
 import { ViewContent } from './types/viewPeersInfo'
+import { ViewStdout } from './viewStdout'
 
 export class ViewPeersInfo implements vscode.TreeDataProvider<ViewContent> {
   dropMimeTypes = ['application/vnd.code.tree.ViewPeersInfo']
@@ -48,10 +49,11 @@ export class ViewPeersInfo implements vscode.TreeDataProvider<ViewContent> {
     return children ? children : []
   }
 
-  public async refresh(peersInfoAll: PeerInfo[]): Promise<any> {
+  public async refresh(peersInfoAll: PeerInfo[], viewStdout: ViewStdout): Promise<any> {
     await this._reloadPeersInfo(peersInfoAll)
     this._onDidChangeTreeData.fire(undefined)
     console.log('auto refresh success')
+    viewStdout.injectLogToCustomerLog('auto refresh peers info success')
   }
 
   private async _reloadPeersInfo(peersInfoAll: PeerInfo[]): Promise<void> {

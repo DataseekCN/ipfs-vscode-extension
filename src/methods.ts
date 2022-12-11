@@ -15,6 +15,7 @@ import { NodeInfos, ViewFileInitData } from './types/methods'
 import { ViewContent } from './types/viewPeersInfo'
 import { ViewNodeInfo } from './viewNodeInfo'
 import { ViewPeersInfo } from './viewPeersInfo'
+import { ViewStdout } from './viewStdout'
 
 export const downloadIpfsDaemon = async (globalStorageUri: Uri): Promise<string> => {
   const exist = fs.existsSync(globalStorageUri.path)
@@ -126,11 +127,12 @@ export const getWebviewContent = (link: String) => {
 export const periodicRefreshPeersInfo = (
   ipfsApis: IIpfsApis,
   viewNodeInfo: ViewNodeInfo,
-  viewPeersInfo: ViewPeersInfo
+  viewPeersInfo: ViewPeersInfo,
+  viewStdout: ViewStdout
 ) => {
   const timer = new Timer(async () => {
     const peersInfoAll = await ipfsApis.getPeersInfo()
-    await viewPeersInfo.refresh(peersInfoAll)
+    await viewPeersInfo.refresh(peersInfoAll, viewStdout)
     viewNodeInfo.refresh(peersInfoAll.length)
   }, 5000)
   // start timer
@@ -160,10 +162,11 @@ export const setUpDaemon = async (
   binPath: string,
   ipfsApis: IIpfsApis,
   viewNodeInfo: ViewNodeInfo,
-  viewPeersInfo: ViewPeersInfo
+  viewPeersInfo: ViewPeersInfo,
+  viewStdout: ViewStdout
 ) => {
   await initializeDaemon(binPath)
-  periodicRefreshPeersInfo(ipfsApis, viewNodeInfo, viewPeersInfo)
+  periodicRefreshPeersInfo(ipfsApis, viewNodeInfo, viewPeersInfo, viewStdout)
   setDaemonStatus(context, DAEMONE_ON)
   vscode.window.showInformationMessage('Daemon start successfully.')
 }

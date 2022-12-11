@@ -52,24 +52,24 @@ export async function activate(context: vscode.ExtensionContext) {
   const viewContents = await getPeersInfo(ipfsApis, gateway, peersInfoAll, 20)
   nodeInfo['Peer Number'] = peersInfoAll.length
 
-  new ViewStdout(context, daemonLogger)
+  const viewStdout = new ViewStdout(context, daemonLogger)
   const viewNodeInfo = new ViewNodeInfo(context, nodeInfo)
   const viewPeersInfo = new ViewPeersInfo(context, viewContents, ipfsApis, gateway)
   const viewFiles = new ViewFiles(context, files, pinnedCids, ipfsApis)
 
-  periodicRefreshPeersInfo(ipfsApis, viewNodeInfo, viewPeersInfo)
+  periodicRefreshPeersInfo(ipfsApis, viewNodeInfo, viewPeersInfo, viewStdout)
 
   context.subscriptions.push(
     helloWorld,
     loadMorePeersInfo(viewPeersInfo),
     uploadFile(viewFiles, ipfsApis),
     shareLink,
-    copyCid,
+    copyCid(viewStdout),
     setPinning(viewFiles, ipfsApis),
     unsetPinning(viewFiles, ipfsApis),
     openInWebView(nodeInfo.GateWay),
     openWebUi(nodeInfo.API),
     stopDaemon(context, ipfsApis),
-    startDaemon(context, binPath, ipfsApis, viewNodeInfo, viewPeersInfo)
+    startDaemon(context, binPath, ipfsApis, viewNodeInfo, viewPeersInfo, viewStdout)
   )
 }

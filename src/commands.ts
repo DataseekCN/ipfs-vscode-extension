@@ -8,6 +8,7 @@ import { getWebviewContent, setUpDaemon, shutDownDaemon } from './methods'
 import { ViewFiles } from './viewFiles'
 import { ViewNodeInfo } from './viewNodeInfo'
 import { ViewPeersInfo } from './viewPeersInfo'
+import { ViewStdout } from './viewStdout'
 
 export const helloWorld = vscode.commands.registerCommand('ipfs-vscode-extension.helloWorld', () => {
   vscode.window.showInformationMessage('Hello World!!!!')
@@ -73,11 +74,13 @@ export const shareLink = vscode.commands.registerCommand('ipfs-vscode-extension.
   vscode.window.showInformationMessage(`Copy link completed! Links is : ${shareLink}`)
 })
 
-export const copyCid = vscode.commands.registerCommand('ipfs-vscode-extension.copyCid', (args: IpfsFile) => {
-  const cid = args.Hash
-  vscode.env.clipboard.writeText(cid)
-  vscode.window.showInformationMessage(`Copy CID completed! CID is : ${cid}`)
-})
+export const copyCid = (viewStdout: ViewStdout) =>
+  vscode.commands.registerCommand('ipfs-vscode-extension.copyCid', (args: IpfsFile) => {
+    const cid = args.Hash
+    vscode.env.clipboard.writeText(cid)
+    vscode.window.showInformationMessage(`Copy CID completed! CID is : ${cid}`)
+    viewStdout.injectLogToCustomerLog(`Copy CID completed! CID is : ${cid}`)
+  })
 
 export const openInWebView = (gateway: string) =>
   vscode.commands.registerCommand('ipfs-vscode-extension.openInWebView', (args: IpfsFile) => {
@@ -129,8 +132,9 @@ export const startDaemon = (
   binPath: string,
   ipfsApis: IIpfsApis,
   viewNodeInfo: ViewNodeInfo,
-  viewPeersInfo: ViewPeersInfo
+  viewPeersInfo: ViewPeersInfo,
+  viewStdout: ViewStdout
 ) =>
   vscode.commands.registerCommand('ipfs-vscode-extension.startDaemon', async () =>
-    setUpDaemon(context, binPath, ipfsApis, viewNodeInfo, viewPeersInfo)
+    setUpDaemon(context, binPath, ipfsApis, viewNodeInfo, viewPeersInfo, viewStdout)
   )
