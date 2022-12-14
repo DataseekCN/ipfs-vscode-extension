@@ -62,12 +62,13 @@ export const getViewFileInitData = async (ipfsApis: IIpfsApis): Promise<ViewFile
   }
 }
 
-export const getNodeInfos = async (ipfsApis: IIpfsApis): Promise<NodeInfos> => {
+export const getNodeInfos = async (ipfsApis: IIpfsApis, context: vscode.ExtensionContext): Promise<NodeInfos> => {
   const nodeConfigs = await ipfsApis.getConfigs()
   const nodeId = await ipfsApis.getNodeId()
   const splitGateWay = nodeConfigs.Addresses.Gateway.split('/')
+  const daemonStatus = context.globalState.get(DAEMON_STATUS)
   return {
-    'Node Status': 'Online',
+    'Node Status': daemonStatus == DAEMONE_ON ? 'Online' : 'Offline',
     'Peer ID': nodeConfigs.Identity.PeerID,
     API: nodeConfigs.Addresses.API,
     GateWay: `http://${splitGateWay[2]}:${splitGateWay[4]}`,
@@ -133,7 +134,7 @@ export const periodicRefreshPeersInfo = (
   const timer = new Timer(async () => {
     const peersInfoAll = await ipfsApis.getPeersInfo()
     await viewPeersInfo.refresh(peersInfoAll, viewStdout)
-    viewNodeInfo.refresh(peersInfoAll.length)
+    viewNodeInfo.refreshPeerNubmber(peersInfoAll.length)
   }, 5000)
   // start timer
   timer.setInterval()
@@ -151,8 +152,13 @@ export const setDaemonStatus = (context: vscode.ExtensionContext, status: string
   context.globalState.update(DAEMON_STATUS, status)
 }
 
-export const shutDownDaemon = async (context: vscode.ExtensionContext, ipfsApis: IIpfsApis) => {
+export const shutDownDaemon = async (
+  context: vscode.ExtensionContext,
+  ipfsApis: IIpfsApis,
+  viewNodeInfo: ViewNodeInfo
+) => {
   await ipfsApis.shutDown()
+  viewNodeInfo.refreshIpfsStatus('Offline')
   vscode.window.showInformationMessage('Daemon stop successfully.')
   setDaemonStatus(context, DAEMONE_OFF)
 }
@@ -168,6 +174,7 @@ export const setUpDaemon = async (
   await initializeDaemon(binPath)
   periodicRefreshPeersInfo(ipfsApis, viewNodeInfo, viewPeersInfo, viewStdout)
   setDaemonStatus(context, DAEMONE_ON)
+  viewNodeInfo.refreshIpfsStatus('Online')
   vscode.window.showInformationMessage('Daemon start successfully.')
 }
 
