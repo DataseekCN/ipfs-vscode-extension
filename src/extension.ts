@@ -11,9 +11,10 @@ import {
   startDaemon,
   stopDaemon,
   unsetPinning,
-  uploadFile
+  uploadFile,
+  uploadFileInExplorer
 } from './commands'
-import { DAEMONE_ON, DAEMON_STATUS } from './constants'
+import { DAEMONE_ON } from './constants'
 import { initializeDaemon } from './ipfsDaemon'
 import {
   downloadIpfsDaemon,
@@ -45,7 +46,6 @@ export async function activate(context: vscode.ExtensionContext) {
   setUpCidDetactor(context)
 
   const ipfsApis = new IpfsApis(api)
-  const daemonStatus: string | undefined = context.globalState.get(DAEMON_STATUS)
   const nodeInfo = await getNodeInfos(ipfsApis, context)
   const { files, pinnedCids } = await getViewFileInitData(ipfsApis)
   const peersInfoAll = await ipfsApis.getPeersInfo()
@@ -70,6 +70,7 @@ export async function activate(context: vscode.ExtensionContext) {
     openInWebView(nodeInfo.GateWay),
     openWebUi(nodeInfo.API),
     stopDaemon(context, ipfsApis, viewNodeInfo),
-    startDaemon(context, binPath, ipfsApis, viewNodeInfo, viewPeersInfo, viewStdout)
+    startDaemon(context, binPath, ipfsApis, viewNodeInfo, viewPeersInfo, viewStdout),
+    uploadFileInExplorer(viewFiles, ipfsApis)
   )
 }

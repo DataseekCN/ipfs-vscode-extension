@@ -64,6 +64,13 @@
       ]
     },
     "menus": {
+      "explorer/context": [
+        {
+          "command": "ipfs-vscode-extension.uploadFileInExplorer",
+          "when": "daemonStatus == daemonOn",
+          "group": "navigation@1"
+        }
+      ],
       "view/title": [
         {
           "command": "ipfs-vscode-extension.showWebUi",
@@ -154,6 +161,10 @@
       {
         "command": "ipfs-vscode-extension.stopDaemon",
         "title": "Stop"
+      },
+      {
+        "command": "ipfs-vscode-extension.uploadFileInExplorer",
+        "title": "Upload File to IPFS"
       }
     ]
   },

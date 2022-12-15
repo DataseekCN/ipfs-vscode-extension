@@ -1,10 +1,12 @@
 import countryCodeEmoji from 'country-code-emoji'
+import FormData, { AppendOptions } from 'form-data'
 import fs from 'fs'
+import glob from 'glob'
 import got from 'got'
 import path from 'path'
 import Timer from 'setinterval'
 import vscode, { Uri } from 'vscode'
-import { IIpfsApis } from './client/ipfsApis'
+import { IIpfsApis, IpfsApis } from './client/ipfsApis'
 import { DAEMONE_OFF, DAEMONE_ON, DAEMON_STATUS } from './constants'
 import { decorate } from './decorator'
 import { initializeDaemon } from './ipfsDaemon'
@@ -13,6 +15,7 @@ import { lookup } from './lib/geoip'
 import { IpInfo } from './types/ipApis'
 import { NodeInfos, ViewFileInitData } from './types/methods'
 import { ViewContent } from './types/viewPeersInfo'
+import { ViewFiles } from './viewFiles'
 import { ViewNodeInfo } from './viewNodeInfo'
 import { ViewPeersInfo } from './viewPeersInfo'
 import { ViewStdout } from './viewStdout'
@@ -182,4 +185,47 @@ export const setUpCidDetactor = (context: vscode.ExtensionContext) => {
   vscode.workspace.onDidOpenTextDocument(() => decorate(context))
   vscode.workspace.onDidChangeTextDocument(() => decorate(context))
   vscode.window.onDidChangeVisibleTextEditors(() => decorate(context))
+}
+
+export const upLoadFile = async (fsPath: string, ipfsApis: IpfsApis, viewFiles: ViewFiles) => {
+  const stat = fs.statSync(fsPath)
+  if (stat.isDirectory()) {
+    const formData = new FormData()
+    const filenames = glob.sync('**/**', { cwd: fsPath })
+    const dirName = path.basename(fsPath)
+    console.log(dirName)
+    if (filenames.length > 0) {
+      for (const filename of filenames) {
+        const filePath = `${fsPath}/${filename}`
+        const filenameIPFS = toQueryString(`${dirName}/${filename}`)
+        if (fs.statSync(filePath).isFile()) {
+          const options: AppendOptions = {
+            filename: filenameIPFS
+          }
+          console.log(filenameIPFS)
+          formData.append(filenameIPFS, fs.readFileSync(filePath), options)
+        }
+      }
+      await ipfsApis.upload({ formData, baseDir: dirName, isDir: true })
+      console.log(`${dirName}文件夹上传成功`)
+    }
+  } else if (stat.isFile()) {
+    const formData = new FormData()
+    const filename = path.basename(fsPath)
+    const options: AppendOptions = {
+      filename
+    }
+    formData.append(filename, fs.readFileSync(fsPath), options)
+    console.log(filename)
+    await ipfsApis.upload({ formData: formData })
+    console.log(`${filename}文件上传成功`)
+  } else {
+    throw new Error('something wrong with the file system')
+  }
+  await viewFiles.refresh()
+  vscode.window.showInformationMessage(fsPath)
+}
+
+function toQueryString(str: string) {
+  return str.replaceAll('/', '%2F')
 }
