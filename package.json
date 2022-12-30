@@ -166,7 +166,16 @@
         "command": "ipfs-vscode-extension.uploadFileInExplorer",
         "title": "Upload File to IPFS"
       }
-    ]
+    ],
+    "icons": {
+      "ipfs-ipfs": {
+        "description": "test001",
+        "default": {
+          "fontPath": "./assets/woff/ipfs.woff",
+          "fontCharacter": "\\E001"
+        }
+      }
+    }
   },
   "scripts": {
     "prepare": "husky install",

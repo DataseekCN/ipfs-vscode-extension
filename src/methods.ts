@@ -19,6 +19,7 @@ import { ViewFiles } from './viewFiles'
 import { ViewNodeInfo } from './viewNodeInfo'
 import { ViewPeersInfo } from './viewPeersInfo'
 import { ViewStdout } from './viewStdout'
+import { updateStatusBarText } from './statusBar'
 
 export const downloadIpfsDaemon = async (globalStorageUri: Uri): Promise<string> => {
   const exist = fs.existsSync(globalStorageUri.path)
@@ -150,9 +151,10 @@ export const handleTimeString = (timeString: string): number => {
   return timeString.endsWith('ms') ? parseFloat(timeString) : parseFloat(timeString) * 1000
 }
 
-export const setDaemonStatus = (context: vscode.ExtensionContext, status: string) => {
-  vscode.commands.executeCommand('setContext', DAEMON_STATUS, status)
-  context.globalState.update(DAEMON_STATUS, status)
+export const setDaemonStatus = async (context: vscode.ExtensionContext, status: string) => {
+  await vscode.commands.executeCommand('setContext', DAEMON_STATUS, status)
+  await context.globalState.update(DAEMON_STATUS, status)
+  updateStatusBarText(status)
 }
 
 export const shutDownDaemon = async (
@@ -163,7 +165,7 @@ export const shutDownDaemon = async (
   await ipfsApis.shutDown()
   viewNodeInfo.refreshIpfsStatus('Offline')
   vscode.window.showInformationMessage('Daemon stop successfully.')
-  setDaemonStatus(context, DAEMONE_OFF)
+  await setDaemonStatus(context, DAEMONE_OFF)
 }
 
 export const setUpDaemon = async (
@@ -176,7 +178,7 @@ export const setUpDaemon = async (
 ) => {
   await initializeDaemon(binPath)
   periodicRefreshPeersInfo(ipfsApis, viewNodeInfo, viewPeersInfo, viewStdout)
-  setDaemonStatus(context, DAEMONE_ON)
+  await setDaemonStatus(context, DAEMONE_ON)
   viewNodeInfo.refreshIpfsStatus('Online')
   vscode.window.showInformationMessage('Daemon start successfully.')
 }

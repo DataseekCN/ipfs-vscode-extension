@@ -25,6 +25,7 @@ import {
   setDaemonStatus,
   setUpCidDetactor
 } from './methods'
+import { createStatusBar } from './statusBar'
 import { ViewFiles } from './viewFiles'
 import { ViewNodeInfo } from './viewNodeInfo'
 import { ViewPeersInfo } from './viewPeersInfo'
@@ -42,7 +43,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const binPath = await downloadIpfsDaemon(context.globalStorageUri)
   const { daemonLogger, api, gateway } = await initializeDaemon(binPath)
-  setDaemonStatus(context, DAEMONE_ON)
+  await setDaemonStatus(context, DAEMONE_ON)
+
   setUpCidDetactor(context)
 
   const ipfsApis = new IpfsApis(api)
@@ -73,4 +75,6 @@ export async function activate(context: vscode.ExtensionContext) {
     startDaemon(context, binPath, ipfsApis, viewNodeInfo, viewPeersInfo, viewStdout),
     uploadFileInExplorer(viewFiles, ipfsApis)
   )
+
+  createStatusBar(context)
 }
