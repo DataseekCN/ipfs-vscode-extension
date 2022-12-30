@@ -78,3 +78,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
   createStatusBar(context)
 }
+
+export async function deactivate(context: vscode.ExtensionContext) {
+  console.log('deactivated')
+  await vscode.commands.executeCommand('ipfs-vscode-extension.stopDaemon')
+}
