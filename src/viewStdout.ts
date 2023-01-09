@@ -53,7 +53,6 @@ export class ViewStdout implements vscode.WebviewViewProvider {
     }
 
     writeCustomerLog(`${log}\n`)
-    this.daemonLogger.on('data', writeCustomerLog)
 
     this.webviewView.onDidChangeVisibility(() => {
       if (!this.webviewView) {
