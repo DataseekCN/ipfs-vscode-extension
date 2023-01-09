@@ -12,6 +12,7 @@ import { decorate } from './decorator'
 import { initializeDaemon } from './ipfsDaemon'
 import { getDownloadURL, unpack } from './lib/download'
 import { lookup } from './lib/geoip'
+import { updateStatusBarText } from './statusBar'
 import { IpInfo } from './types/ipApis'
 import { NodeInfos, ViewFileInitData } from './types/methods'
 import { ViewContent } from './types/viewPeersInfo'
@@ -19,7 +20,6 @@ import { ViewFiles } from './viewFiles'
 import { ViewNodeInfo } from './viewNodeInfo'
 import { ViewPeersInfo } from './viewPeersInfo'
 import { ViewStdout } from './viewStdout'
-import { updateStatusBarText } from './statusBar'
 
 export const downloadIpfsDaemon = async (globalStorageUri: Uri): Promise<string> => {
   const exist = fs.existsSync(globalStorageUri.path)
@@ -86,7 +86,13 @@ export const getPeersInfo = async (
   peersInfoAll: PeerInfo[],
   loadNumber: number
 ): Promise<ViewContent[]> => {
-  const peersInfo = peersInfoAll.slice(0, loadNumber)
+  let peersInfo: PeerInfo[]
+  try {
+    peersInfo = peersInfoAll.slice(0, loadNumber)
+  } catch (e) {
+    console.warn('faild to get peers info')
+    peersInfo = []
+  }
   return await Promise.all(
     peersInfo.map(async (peerInfo) => {
       const ip = peerInfo.Addr.split('/')[2]
