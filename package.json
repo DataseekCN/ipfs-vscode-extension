@@ -7,9 +7,19 @@
     "type": "git",
     "url": "https://github.com/DataseekCN/ipfs-vscode-extension.git"
   },
-  "publisher": "ipfs",
-  "displayName": "ipfs-vscode-extension",
-  "description": "IPFS vscode extension",
+  "publisher": "Dataseek",
+  "displayName": "IPFS",
+  "description": "IPFS VS Code - start using IPFS Kubo in VS Code in minutes.",
+  "icon":"https://raw.githubusercontent.com/ipfs-inactive/logo/master/raster-generated/ipfs-logo-256-ice-text.png",
+  "galleryBanner": {
+    "color": "#FFFFFF",
+    "theme": "dark"
+  },
+  "homepage": "https://github.com/DataseekCN/ipfs-vscode-extension/blob/main/README.md",
+  "bugs": {
+    "url": "https://github.com/DataseekCN/ipfs-vscode-extension/issues",
+    "email": "support@dataseek.info"
+  },
   "engines": {
     "vscode": "^1.71.0"
   },
