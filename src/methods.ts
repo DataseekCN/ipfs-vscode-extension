@@ -19,7 +19,6 @@ import { ViewContent } from './types/viewPeersInfo'
 import { ViewFiles } from './viewFiles'
 import { ViewNodeInfo } from './viewNodeInfo'
 import { ViewPeersInfo } from './viewPeersInfo'
-import { ViewStdout } from './viewStdout'
 
 export const downloadIpfsDaemon = async (globalStorageUri: Uri): Promise<string> => {
   const exist = fs.existsSync(globalStorageUri.path)
@@ -138,12 +137,11 @@ export const getWebviewContent = (link: String) => {
 export const periodicRefreshPeersInfo = (
   ipfsApis: IIpfsApis,
   viewNodeInfo: ViewNodeInfo,
-  viewPeersInfo: ViewPeersInfo,
-  viewStdout: ViewStdout
+  viewPeersInfo: ViewPeersInfo
 ) => {
   const timer = new Timer(async () => {
     const peersInfoAll = await ipfsApis.getPeersInfo()
-    await viewPeersInfo.refresh(peersInfoAll, viewStdout)
+    await viewPeersInfo.refresh(peersInfoAll)
     viewNodeInfo.refreshPeerNubmber(peersInfoAll.length)
   }, 5000)
   // start timer
@@ -163,7 +161,7 @@ export const setDaemonStatus = async (context: vscode.ExtensionContext, status: 
   updateStatusBarText(status)
 }
 
-export const shutDownDaemon = async (
+export const shutdownDaemon = async (
   context: vscode.ExtensionContext,
   ipfsApis: IIpfsApis,
   viewNodeInfo: ViewNodeInfo
@@ -174,22 +172,21 @@ export const shutDownDaemon = async (
   await setDaemonStatus(context, DAEMONE_OFF)
 }
 
-export const setUpDaemon = async (
+export const setupDaemon = async (
   context: vscode.ExtensionContext,
   binPath: string,
   ipfsApis: IIpfsApis,
   viewNodeInfo: ViewNodeInfo,
-  viewPeersInfo: ViewPeersInfo,
-  viewStdout: ViewStdout
+  viewPeersInfo: ViewPeersInfo
 ) => {
   await initializeDaemon(binPath)
-  periodicRefreshPeersInfo(ipfsApis, viewNodeInfo, viewPeersInfo, viewStdout)
+  periodicRefreshPeersInfo(ipfsApis, viewNodeInfo, viewPeersInfo)
   await setDaemonStatus(context, DAEMONE_ON)
   viewNodeInfo.refreshIpfsStatus('Online')
   vscode.window.showInformationMessage('Daemon start successfully.')
 }
 
-export const setUpCidDetactor = (context: vscode.ExtensionContext) => {
+export const setupCidDecorator = (context: vscode.ExtensionContext) => {
   vscode.workspace.onDidOpenTextDocument(() => decorate(context))
   vscode.workspace.onDidChangeTextDocument(() => decorate(context))
   vscode.window.onDidChangeVisibleTextEditors(() => decorate(context))

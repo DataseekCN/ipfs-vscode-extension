@@ -23,13 +23,13 @@ import {
   getViewFileInitData,
   periodicRefreshPeersInfo,
   setDaemonStatus,
-  setUpCidDetactor
+  setupCidDecorator
 } from './methods'
 import { createStatusBar } from './statusBar'
 import { ViewFiles } from './viewFiles'
+import { ViewLogPanel } from './viewLogPanel'
 import { ViewNodeInfo } from './viewNodeInfo'
 import { ViewPeersInfo } from './viewPeersInfo'
-import { ViewStdout } from './viewStdout'
 
 // import { create, globSource } from 'ipfs-http-client'
 // this method is called when your extension is activated
@@ -38,41 +38,42 @@ export async function activate(context: vscode.ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "ipfs-vscode-extension" is now active!')
-  //点开插件显示panel关闭插件时候记得set位false
-  vscode.commands.executeCommand('setContext', 'showIpfsPanel', true)
+
+  vscode.commands.executeCommand('setContext', 'showLogPanel', true)
 
   const binPath = await downloadIpfsDaemon(context.globalStorageUri)
-  const { daemonLogger, api, gateway } = await initializeDaemon(binPath)
+  const { api, gateway } = await initializeDaemon(binPath)
   await setDaemonStatus(context, DAEMONE_ON)
 
-  setUpCidDetactor(context)
+  setupCidDecorator(context)
 
   const ipfsApis = new IpfsApis(api)
-  const nodeInfo = await getNodeInfos(ipfsApis, context)
   const { files, pinnedCids } = await getViewFileInitData(ipfsApis)
   const peersInfoAll = await ipfsApis.getPeersInfo()
   const viewContents = await getPeersInfo(ipfsApis, gateway, peersInfoAll, 20)
+
+  const nodeInfo = await getNodeInfos(ipfsApis, context)
   nodeInfo['Peer Number'] = peersInfoAll.length
 
-  const viewStdout = new ViewStdout(context, daemonLogger)
+  new ViewLogPanel(context)
   const viewNodeInfo = new ViewNodeInfo(context, nodeInfo)
   const viewPeersInfo = new ViewPeersInfo(context, viewContents, ipfsApis, gateway)
   const viewFiles = new ViewFiles(context, files, pinnedCids, ipfsApis)
 
-  periodicRefreshPeersInfo(ipfsApis, viewNodeInfo, viewPeersInfo, viewStdout)
+  periodicRefreshPeersInfo(ipfsApis, viewNodeInfo, viewPeersInfo)
 
   context.subscriptions.push(
     helloWorld,
     loadMorePeersInfo(viewPeersInfo),
     uploadFile(viewFiles, ipfsApis),
     shareLink,
-    copyCid(viewStdout),
+    copyCid(),
     setPinning(viewFiles, ipfsApis),
     unsetPinning(viewFiles, ipfsApis),
     openInWebView(nodeInfo.GateWay),
     openWebUi(nodeInfo.API),
     stopDaemon(context, ipfsApis, viewNodeInfo),
-    startDaemon(context, binPath, ipfsApis, viewNodeInfo, viewPeersInfo, viewStdout),
+    startDaemon(context, binPath, ipfsApis, viewNodeInfo, viewPeersInfo),
     uploadFileInExplorer(viewFiles, ipfsApis)
   )
 

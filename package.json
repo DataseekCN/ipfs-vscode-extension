@@ -10,7 +10,7 @@
   "publisher": "Dataseek",
   "displayName": "IPFS",
   "description": "IPFS VS Code - start using IPFS Kubo in VS Code in minutes.",
-  "icon":"assets/ipfs-logo-256-ice-text.png",
+  "icon": "assets/ipfs-logo-256-ice-text.png",
   "galleryBanner": {
     "color": "#FFFFFF",
     "theme": "dark"
@@ -67,9 +67,9 @@
       "ipfs-panel": [
         {
           "type": "webview",
-          "id": "ipfs-panel-stdout",
+          "id": "ipfs-log-panel",
           "name": "",
-          "when": "showIpfsPanel"
+          "when": "showLogPanel"
         }
       ]
     },

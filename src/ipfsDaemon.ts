@@ -1,11 +1,9 @@
-import vscode from 'vscode'
 import { execFile } from 'child_process'
 import { promises as fs } from 'fs'
 import got from 'got'
 import { homedir } from 'os'
 import path from 'path/posix'
-import { DAEMONE_ON } from './constants'
-import { DaemonLogger } from './daemonLogger'
+import logger from './logger'
 
 const CONFIG_PATH = path.join(homedir(), '.ipfs', 'config')
 
@@ -58,14 +56,14 @@ export const initializeDaemon = async (binPath: string) => {
 
   if (await isDaemonAlreadyExists(api)) {
     console.log(`Daemon already exists on ${api}, using the existing one.`)
-    return { daemonLogger: new DaemonLogger(), api, gateway }
+    logger.log('daemon', 'Logs will be available once you close off all IPFS applications and processes.')
+    return { api, gateway }
   }
 
   console.log('Initializing daemon...')
   const exePath = path.join(binPath, 'kubo', 'ipfs')
   const daemon = execFile(exePath, ['daemon', '--init'])
-  const daemonLogger = new DaemonLogger(daemon)
-
+  daemon.stdout?.on('data', (content) => logger.log('daemon', content))
   await waitDaemon(api)
-  return { daemonLogger, api, gateway }
+  return { api, gateway }
 }

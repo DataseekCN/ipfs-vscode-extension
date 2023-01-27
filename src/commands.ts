@@ -1,10 +1,10 @@
 import vscode from 'vscode'
 import { IIpfsApis, IpfsApis } from './client/ipfsApis'
-import { getWebviewContent, setUpDaemon, shutDownDaemon, upLoadFile } from './methods'
+import logger from './logger'
+import { getWebviewContent, setupDaemon, shutdownDaemon, upLoadFile } from './methods'
 import { ViewFiles } from './viewFiles'
 import { ViewNodeInfo } from './viewNodeInfo'
 import { ViewPeersInfo } from './viewPeersInfo'
-import { ViewStdout } from './viewStdout'
 
 export const helloWorld = vscode.commands.registerCommand('ipfs-vscode-extension.helloWorld', () => {
   vscode.window.showInformationMessage('Hello World!!!!')
@@ -30,12 +30,12 @@ export const shareLink = vscode.commands.registerCommand('ipfs-vscode-extension.
   vscode.window.showInformationMessage(`Copy link completed! Links is : ${shareLink}`)
 })
 
-export const copyCid = (viewStdout: ViewStdout) =>
+export const copyCid = () =>
   vscode.commands.registerCommand('ipfs-vscode-extension.copyCid', (args: IpfsFile) => {
     const cid = args.Hash
     vscode.env.clipboard.writeText(cid)
     vscode.window.showInformationMessage(`Copy CID completed! CID is : ${cid}`)
-    viewStdout.injectLogToCustomerLog(`Copy CID completed! CID is : ${cid}`)
+    logger.log('ipfs', `Copy CID completed! CID is : ${cid}`)
   })
 
 export const openInWebView = (gateway: string) =>
@@ -82,7 +82,7 @@ export const openWebUi = (apiPath: string) =>
 
 export const stopDaemon = (context: vscode.ExtensionContext, ipfsApis: IIpfsApis, viewNodeInfo: ViewNodeInfo) =>
   vscode.commands.registerCommand('ipfs-vscode-extension.stopDaemon', async () =>
-    shutDownDaemon(context, ipfsApis, viewNodeInfo)
+    shutdownDaemon(context, ipfsApis, viewNodeInfo)
   )
 
 export const startDaemon = (
@@ -90,11 +90,10 @@ export const startDaemon = (
   binPath: string,
   ipfsApis: IIpfsApis,
   viewNodeInfo: ViewNodeInfo,
-  viewPeersInfo: ViewPeersInfo,
-  viewStdout: ViewStdout
+  viewPeersInfo: ViewPeersInfo
 ) =>
   vscode.commands.registerCommand('ipfs-vscode-extension.startDaemon', async () =>
-    setUpDaemon(context, binPath, ipfsApis, viewNodeInfo, viewPeersInfo, viewStdout)
+    setupDaemon(context, binPath, ipfsApis, viewNodeInfo, viewPeersInfo)
   )
 
 export const uploadFileInExplorer = (viewFiles: ViewFiles, ipfsApis: IpfsApis) =>

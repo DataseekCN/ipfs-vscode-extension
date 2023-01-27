@@ -74,8 +74,8 @@ const logContainers = {
 }
 
 window.addEventListener('message', (event) => {
-  /** @type {import('../../types/log').Log} */
+  /** @type {import('../../types/logger').Log} */
   const log = event.data
 
-  logContainers[log.type].innerText += log.log
+  logContainers[log.type].innerText += log.content
 })
