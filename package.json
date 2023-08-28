@@ -1,9 +1,25 @@
 {
   "name": "ipfs-vscode-extension",
-  "displayName": "ipfs-vscode-extension",
-  "description": "IPFS vscode extension",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
+  "main": "./out/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DataseekCN/ipfs-vscode-extension.git"
+  },
+  "publisher": "Dataseek",
+  "displayName": "IPFS",
+  "description": "IPFS VS Code - start using IPFS Kubo in VS Code in minutes.",
+  "icon": "assets/ipfs-logo-256-ice-text.png",
+  "galleryBanner": {
+    "color": "#FFFFFF",
+    "theme": "dark"
+  },
+  "homepage": "https://github.com/DataseekCN/ipfs-vscode-extension/blob/main/README.md",
+  "bugs": {
+    "url": "https://github.com/DataseekCN/ipfs-vscode-extension/issues",
+    "email": "support@dataseek.info"
+  },
   "engines": {
     "vscode": "^1.71.0"
   },
@@ -11,16 +27,25 @@
     "Other"
   ],
   "activationEvents": [
+    "onView:ipfs-node-info",
+    "onView:ipfs-peers",
+    "onView:ipfs-files",
     "onCommand:ipfs-vscode-extension.helloWorld"
   ],
-  "main": "./out/extension.js",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
         {
           "id": "ipfs-activitybar",
           "title": "IPFS",
-          "icon": "src/assets/ipfs.svg"
+          "icon": "assets/ipfs.svg"
+        }
+      ],
+      "panel": [
+        {
+          "id": "ipfs-panel",
+          "title": "IPFS",
+          "icon": "assets/ipfs.svg"
         }
       ]
     },
@@ -28,30 +53,154 @@
       "ipfs-activitybar": [
         {
           "id": "ipfs-node-info",
-          "name": "IPFS Node Info "
+          "name": "IPFS NODE INFO "
         },
         {
           "id": "ipfs-peers",
-          "name": "IPFS Peers"
+          "name": "IPFS PEERS"
         },
         {
           "id": "ipfs-files",
-          "name": "Files"
+          "name": "FILES"
+        }
+      ],
+      "ipfs-panel": [
+        {
+          "type": "webview",
+          "id": "ipfs-log-panel",
+          "name": "",
+          "when": "showLogPanel"
         }
       ]
+    },
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "ipfs-vscode-extension.uploadFileInExplorer",
+          "when": "daemonStatus == daemonOn",
+          "group": "navigation@1"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "ipfs-vscode-extension.showWebUi",
+          "when": "view == ipfs-node-info",
+          "group": "navigation@2"
+        },
+        {
+          "command": "ipfs-vscode-extension.uploadFile",
+          "when": "view == ipfs-node-info",
+          "group": "navigation@3"
+        },
+        {
+          "command": "ipfs-vscode-extension.startDaemon",
+          "when": "view == ipfs-node-info && daemonStatus == daemonOff",
+          "group": "navigation@1"
+        },
+        {
+          "command": "ipfs-vscode-extension.stopDaemon",
+          "when": "view == ipfs-node-info && daemonStatus == daemonOn",
+          "group": "navigation"
+        },
+        {
+          "command": "ipfs-vscode-extension.loadMore",
+          "when": "view == ipfs-peers",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "ipfs-vscode-extension.shareLink",
+          "when": "view == ipfs-files"
+        },
+        {
+          "command": "ipfs-vscode-extension.copyCid",
+          "when": "view == ipfs-files"
+        },
+        {
+          "command": "ipfs-vscode-extension.openInWebView",
+          "when": "view == ipfs-files"
+        },
+        {
+          "command": "ipfs-vscode-extension.setPinning",
+          "when": "view == ipfs-files && viewItem not in pinnedCids"
+        },
+        {
+          "command": "ipfs-vscode-extension.unsetPinning",
+          "when": "view == ipfs-files && viewItem in pinnedCids"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "ipfs-vscode-extension.loadMore",
+        "title": "Load More"
+      },
+      {
+        "command": "ipfs-vscode-extension.shareLink",
+        "title": "Share Link"
+      },
+      {
+        "command": "ipfs-vscode-extension.copyCid",
+        "title": "Copy CID"
+      },
+      {
+        "command": "ipfs-vscode-extension.uploadFile",
+        "title": "Upload File"
+      },
+      {
+        "command": "ipfs-vscode-extension.showWebUi",
+        "title": "Web UI"
+      },
+      {
+        "command": "ipfs-vscode-extension.openInWebView",
+        "title": "Open In WebView"
+      },
+      {
+        "command": "ipfs-vscode-extension.setPinning",
+        "title": "Set Pinning"
+      },
+      {
+        "command": "ipfs-vscode-extension.unsetPinning",
+        "title": "Unset Pinning"
+      },
+      {
+        "command": "ipfs-vscode-extension.startDaemon",
+        "title": "Start"
+      },
+      {
+        "command": "ipfs-vscode-extension.stopDaemon",
+        "title": "Stop"
+      },
+      {
+        "command": "ipfs-vscode-extension.uploadFileInExplorer",
+        "title": "Upload File to IPFS"
+      }
+    ],
+    "icons": {
+      "ipfs-ipfs": {
+        "description": "test001",
+        "default": {
+          "fontPath": "./assets/woff/ipfs.woff",
+          "fontCharacter": "\\E001"
+        }
+      }
     }
   },
   "scripts": {
-    "vscode:prepublish": "yarn run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "yarn run compile && yarn run lint",
+    "prepare": "husky install",
     "lint": "eslint src --ext ts",
     "lint:fix": "yarn lint --fix",
+    "pre-commit-check": "lint-staged && yarn type-check",
+    "type-check": "yarn compile --noEmit",
+    "compile": "tsc -p .",
+    "watch": "yarn esbuild --watch",
+    "pretest": "yarn compile && yarn lint",
     "test": "node ./out/test/runTest.js",
-    "prepare": "husky install",
-    "type-check": "tsc -p . --noEmit",
-    "pre-commit-check": "lint-staged && yarn type-check"
+    "esbuild-base": "rimraf out && node esbuild.config.js",
+    "esbuild": "yarn esbuild-base --sourcemap",
+    "package": "npx vsce package",
+    "vscode:prepublish": "yarn esbuild-base --minify"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
@@ -63,15 +212,37 @@
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
     "@vscode/test-electron": "^2.1.5",
+    "chokidar": "^3.5.3",
     "commitlint-plugin-function-rules": "^1.7.1",
+    "console-stamp": "^3.0.6",
+    "esbuild": "^0.15.12",
     "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "glob": "^8.0.3",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "mocha": "^10.0.0",
     "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
     "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "@ipld/dag-cbor": "^7.0.3",
+    "axios": "1.1.3",
+    "cachedir": "^2.3.0",
+    "country-code-emoji": "^2.3.0",
+    "form-data": "^4.0.0",
+    "glob": "^8.0.3",
+    "got": "^12.5.3",
+    "gunzip-maybe": "^1.4.2",
+    "hasha": "^5.2.2",
+    "ip": "^2.0.0",
+    "ipfs-http-client": "58.0.1",
+    "multiformats": "^10.0.2",
+    "p-memoize": "^7.1.1",
+    "pkg-conf": "^3.1.0",
+    "setinterval": "^0.2.4",
+    "tar-fs": "^2.1.0",
+    "unzip-stream": "^0.3.0"
   }
 }
