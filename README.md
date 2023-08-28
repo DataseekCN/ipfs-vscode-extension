@@ -49,10 +49,12 @@ ChatGPT explains it like this:
 
 IPFS official site is [https://ipfs.tech/](https://ipfs.tech/). 
 
-See this [quick 2 mins video explanation](https://www.youtube.com/watch?v=k1EQC7tdh70) of IPFS: 
+See this [quick 2 mins video explanation](https://www.youtube.com/watch?v=k1EQC7tdh70) of IPFS:
+
 ![image](https://user-images.githubusercontent.com/54736083/212457452-c6308f2b-cdf3-4811-8d71-0e9f4d639d7e.png)
 
 IPFS founder[ Juan Benet's speech](https://www.youtube.com/watch?v=HUVmypx9HGI) at Standford University: 
+
 ![image](https://user-images.githubusercontent.com/54736083/212458987-f94c52b9-4289-4ebd-9245-6eb9ade0aa68.png)
 
 For full documentation of IPFS visit [docs.ipfs.tech](https://docs.ipfs.tech/). 
