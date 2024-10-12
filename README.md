@@ -86,3 +86,6 @@ A: Only if you completed shutdown VS Code will the process be killed. Disabling 
 
 > Q: Where are the IPFS software installed? 
 A: IPFS node binary is stored in VS Code Global Storage directory  associated with the extension. This will not be interfering with your normal IPFS installation.
+
+> Q: Is the project activtly maintained? 
+A: The project currently is on maintenance mode as the last grant milestone which covers a 12 months service period was retracted by Filecoin Foundation. We are seeking alternative funds to continue service future upgrades of the project. 
